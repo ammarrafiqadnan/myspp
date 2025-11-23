@@ -1,0 +1,110 @@
+<link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+<?php
+$JFORM='LIST';
+$carian=strtoupper(isset($_REQUEST["carian"])?$_REQUEST["carian"]:"");
+?>
+
+
+        <header class="panel-heading"  style="background-color:rgb(38, 167, 228)">
+            <h6 class="panel-title"><font color="#000000" size="3"><b><?php print strtoupper($menu);?></b></font></h6>
+        </header>
+
+		<div class="box" style="background-color:#F2F2F2">
+
+            <div class="box-body">
+        	<input type="hidden" name="id" value="" />
+            <div class="x_panel">
+			<!-- <header class="panel-heading"  style="background-color:rgb(38, 167, 228)">
+                <div class="panel-actions">
+                </div>
+                <h6 class="panel-title"><font color="#000000"><b>Senarai Maklumat Muatnaik Dokumen</b></font></h6> 
+            </header> -->
+			</div>
+            </div>            
+            <br /> 
+            <div class="box-body" style="height: 40px;background-color:#F2F2F2;">
+                <div class="row">
+                    <!--<label for="nama" class="col-sm-1 control-label">Status:</label>
+                     <div class="col-sm-3">
+                        <select name="status" id="status" class="form-control">
+                            <option value="">Sila pilih status</option>
+                            <option value="">Aktif</option>
+                            <option value="">Tidak Aktif</option>
+                        </select>
+                    </div> -->
+                    <div class="col-md-1">
+                        <label for="">Carian: </label>
+                    </div>
+                    <div class="col-md-5" style="background-color:#F2F2F2">
+                        <input type="text" name="carian" value="" class="form-control" placeholder="Tajuk Dokumen">
+                    </div>
+                    <div class="col-md-2" style="background-color:#F2F2F2">
+                        <button type="button" class="btn btn-info" onclick="do_page()">
+                            <i class=" fa fa-search"></i> <font style="font-family:Verdana, Geneva, sans-serif">Cari</font>
+                        </button>
+                    </div>
+                </div>   
+            </div>
+            <br>
+            <!-- <div class="col-md-12" align="right">
+                <a href="pengurusan/FAQ_form.php?id=" class="btn btn-md btn-primary" data-toggle="modal" data-target="#myModal" title="Tambah Maklumat FAQ">
+                    <i class="fa fa-plus"></i> Tambah FAQ
+                </a>
+            </div> -->
+			<br>
+            
+			<div class="box-body" style="background-color:#F2F2F2">
+                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                    <thead  style="background-color:rgb(38, 167, 228)">
+                        <th width="5%"><font color="#000000"><div align="center">No.</div></font></th>
+                        <th width="15%"><font color="#000000"><div align="center">Tajuk Dokumen</div></font></th>
+                        <th width="10%"><font color="#000000"><div align="center">Papar <br><small style="color: #fff;">Nota: Tanda '/' jika butang muatnaik perlu dipaparkan di bahagian permohonan</small></div></font></th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="center">1.</td>
+                            <td>Keputusan Peperiksaan PT3/PMR/SRP/LCE</td>
+                            <td align="center">
+                                <input type="checkbox" checked>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">2.</td>
+                            <td>Keputusan SPM/MCE/SPVM/SPM(V)</td>
+                            <td align="center">
+                                <input type="checkbox">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">3.</td>
+                            <td>Keputusan STPM/STP/HSC</td>
+                            <td align="center">
+                                <input type="checkbox" checked>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">4.</td>
+                            <td>Keputusan STAM</td>
+                            <td align="center">
+                                <input type="checkbox" checked>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">5.</td>
+                            <td>Keputusan Pengajian Tinggi</td>
+                            <td align="center">
+                                <input type="checkbox">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+     </div>
+  </div>    
+
+          

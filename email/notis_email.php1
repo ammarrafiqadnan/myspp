@@ -1,0 +1,176 @@
+<?php 
+function DispDate($dtmDate){
+	$year = substr($dtmDate, 0, 4); // returns YYYY
+	$month = substr($dtmDate, 5, 2); // returns MM
+	$day = substr($dtmDate, 8, 2); // returns DD
+	if($day == '00' || $day == ''){
+		$dtmDate = '';
+	}else{			
+		$dtmDate = $day."/".$month."/".$year;
+	}
+	return $dtmDate;
+}
+
+function send_mesej($conn, $appli_id, $code_msg, $sent_to, $note){
+
+	if (file_exists('mail_send.php')) {
+		include_once 'mail_send.php';
+	} else if (file_exists('../_msys/email/mail_send.php')) {
+		include_once '../_msys/email/mail_send.php';
+	} else if (file_exists('../../_msys/email/mail_send.php')) {
+		include_once '../../_msys/email/mail_send.php';
+	}
+
+
+// 	$conn->debug=true;
+    $pid = $appli_id;
+
+	$rsData = $conn->query("SELECT A.`id` AS apply_id, A.`appli_type`, A.`applicant_id`, A.`note_keputusan`, A.`ref_no`, B.`com_name`, B.`com_email`, B.`user_id`, B.`app_name`  
+		FROM `appli` A, `applicant` B WHERE A.`applicant_id`=B.`id` AND A.`id`='{$appli_id}'");
+	$applicant_id = $rsData->fields['applicant_id'];
+	$appli_id = $rsData->fields['appli_id'];
+	$ref_no = $rsData->fields['ref_no'];
+	$appli_dt = $rsData->fields['appli_dt'];
+	$com_name = $rsData->fields['com_name'];
+	$com_email = $rsData->fields['com_email'];
+	$app_name = $rsData->fields['app_name'];
+	$user_id = $rsData->fields['user_id'];
+	$appli_type = $rsData->fields['appli_type'];
+	if(empty($note)){
+	    $note = $rsData->fields['note_keputusan'];
+    }
+    
+	$rsNotis = $conn->query("SELECT * FROM `notice_template` WHERE `code`='{$code_msg}'");
+	$tajuk = $rsNotis->fields['descr'];
+	$mesej = $rsNotis->fields['message'];
+	//if($cat=='L1'){ $appli_type = 'Permohonan Lesen Baru'; }
+	if(!empty($appli_type)){
+    	$rsT = $conn->query("SELECT `descr` FROM `appli_type` WHERE `code`='{$appli_type}'");
+    	$appli_type = $rsT->fields['descr'];
+    }
+
+	if($code_msg=='J001'){
+		$rsMtg = $conn->query("SELECT `meeting_dt` FROM `meeting` A, `appli` B WHERE A.`id`=B.`meeting_no` AND B.`id`='{$appli_id}'");
+		$meeting_dt = DisplayDate($rsMtg->fields['meeting_dt']);
+	}
+
+    // MESEJ YANG PE:RU DISEDIAKAN
+	$mesej = str_replace("[[com_name]]",$com_name,$mesej);
+	$mesej = str_replace("[[appli_type]]",$appli_type,$mesej);
+	$mesej = str_replace("[[type]]",$appli_type,$mesej);
+	
+	$mesej = str_replace("[[app_name]]",$app_name,$mesej);
+	$mesej = str_replace("[[appli_dt]]",DisplayDate($appli_dt),$mesej);
+	$mesej = str_replace("[[ref_no]]",$ref_no,$mesej);
+	$mesej = str_replace("[[id_premis]]",$user_id,$mesej);
+	$mesej = str_replace("[[meeting_dt]]",$meeting_dt,$mesej);
+	
+    if($note=='TJ'){
+		$rsTJ = $conn->query("SELECT * FROM `appointment` WHERE `appm_id`='{$pid}'");
+		$mesej = str_replace("[[tarikh]]",DisplayDate($rsTJ->fields['appm_date']),$mesej);
+		$mesej = str_replace("[[masa]]",$rsTJ->fields['appm_time'],$mesej);
+	} else {
+	    $mesej = str_replace("[[note]]",$note,$mesej);
+	}
+    
+	// $mesej = str_replace("[[ref_no]]",$ref_no,$mesej);
+	// $mesej = str_replace("[[ref_no]]",$ref_no,$mesej);
+	$dari = 'aemh@dvs.gov.my';				 // system email
+	$cc = ''; //'xxx@com.my';				 // jika ada
+	
+// 	print $mesej; exit;
+
+	if($sent_to=='us'){ 
+		// NOTIS KEPADA URUSETIA
+
+		$rsu = $conn->query("SELECT A.`email`, A.`id`, A.`user_id`, A.`name` FROM `user` A, `user_role` B 
+			WHERE A.`id`=B.`user_id` AND B.`role` LIKE 'us' AND A.`state` is NOT NULL AND A.`user_id` IS NOT NULL AND A.`email` IS NOT NULL");
+		while(!$rsu->EOF){ 
+			$staff_id = $rsu->fields['user_id'];
+			$staff_email = $rsu->fields['email'];
+			$staff_name = $rsu->fields['name'];
+			
+			// HANTAR NOTIS
+			// cat : applicant_id : appli_id : user_id : user_email : message
+			notis_admin($code_msg, $applicant_id, $apply_id, $staff_id, $staff_email, $mesej);
+	
+			// HANTAR EMEL OFF SEKEJAP
+			// $staff_email='nizamms@gmail.com';
+			//$err = mail_send($tajuk, $mesej, $staff_email, $staff_name, $dari, $cc); 
+			
+			// NEXT RECORD
+			$rsu->movenext();
+		}
+
+	} else if($sent_to=='pdk' ){ 
+		// NOTIS KEPADA URUSETIA
+
+		$rsu = $conn->query("SELECT A.`email`, A.`id`, A.`user_id`, A.`name` FROM `user` A, `user_role` B 
+			WHERE A.`id`=B.`user_id` AND B.`role` LIKE 'pdk' AND A.`state` is NOT NULL AND A.`user_id` IS NOT NULL AND A.`email` IS NOT NULL");
+		while(!$rsu->EOF){ 
+			$staff_id = $rsu->fields['user_id'];
+			$staff_email = $rsu->fields['email'];
+			$staff_name = $rsu->fields['name'];
+			
+			// HANTAR NOTIS
+			// cat : applicant_id : appli_id : user_id : user_email : message
+			notis_admin($code_msg, $applicant_id, $apply_id, $staff_id, $staff_email, $mesej);
+	
+			// HANTAR EMEL OFF Sekejap
+			// $staff_email='nizamms@gmail.com';
+// 			$err = mail_send($tajuk, $mesej, $staff_email, $staff_name, $dari, $cc); 
+			
+			// NEXT RECORD
+			$rsu->movenext();
+		}
+
+	} else if($sent_to=='tj' ){ 
+		// NOTIS KEPADA URUSETIA
+        
+        // $conn->debug=true;
+        
+        $rs = $conn->query("SELECT A.*, B.com_name FROM `appointment` A, `applicant` B WHERE A.`applicant_id`=B.`id` AND A.`appm_id`='{$pid}'");
+        $applicant_id = $rs->fields['applicant_id'];
+        $appm_pic = $rs->fields['appm_pic'];
+        $com_name = $rs->fields['com_name'];
+        
+		$rsu = $conn->query("SELECT DISTINCT A.`id`, A.`email`, A.`user_id`, A.`name`, C.`urusetia_id` 
+		    FROM `user` A, `user_role` B, `appli_pic` C 
+		    WHERE A.`id`=B.`user_id` AND A.`id`=C.`urusetia_id` 
+		    AND B.`role` LIKE 'us' AND A.`id`='{$appm_pic}' AND A.`user_id` IS NOT NULL AND A.`email` IS NOT NULL");
+		while(!$rsu->EOF){ 
+			$staff_id = $rsu->fields['user_id'];
+			$staff_email = $rsu->fields['email'];
+			$staff_name = $rsu->fields['name'];
+			
+			$mesej .= "<br>Syarikat : ".$com_name;
+			// HANTAR NOTIS
+			// cat : applicant_id : appli_id : user_id : user_email : message
+			notis_admin($code_msg, $applicant_id, $pid, $staff_id, $staff_email, $mesej);
+	
+			// HANTAR EMEL OFF SEKEJAP
+// 			$staff_email='nizamms@gmail.com';
+// 			$err = mail_send($tajuk, $mesej, $staff_email, $staff_name, $dari, $cc); 
+			
+			// NEXT RECORD
+			$rsu->movenext();
+		}
+
+	} else if($sent_to=='owner'){
+		
+		// HANTAR NOTIS KEPADA PEMOHON
+		// cat : applicant_id : appli_id : user_id : user_email : message
+		notis_pemohon($code_msg, $applicant_id, $apply_id, $user_id, $com_email, $mesej);
+
+		// HANTAR EMEL KEPADA PEMOHON
+		// $com_email='nizamms@gmail.com';
+		//$err = mail_send($tajuk, $mesej, $com_email, $com_name, $dari, $cc); 
+
+
+	}
+
+
+}
+
+
+?>

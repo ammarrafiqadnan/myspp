@@ -1,0 +1,72 @@
+FONT		    {FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+TD		     	{FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+BODY		    {FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+P		     	{FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+DIV		     	{FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+INPUT		    {FONT-FAMILY: Verdana, Arial;	FONT-SIZE: 11px; BACKGROUND-COLOR: #FFFFFF;}
+TEXTAREA	    {FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;BACKGROUND-COLOR: #FFFFCC;}
+FORM 		    {FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+SELECT		    {FONT-FAMILY: Verdana, Arial; FONT-SIZE: 11px;}
+
+A:link          {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 12px; TEXT-DECORATION: underline; BACKGROUND: none;}
+A:active        {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 12px; TEXT-DECORATION: underline; BACKGROUND: none;}
+A:visited       {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 12px; TEXT-DECORATION: underline; BACKGROUND: none;}
+A:hover         {FONT-FAMILY: Verdana, Arial; COLOR: #FF0000; FONT-SIZE: 12px; TEXT-DECORATION: underline; BACKGROUND: none;}
+
+.title 		    {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; FONT-WEIGHT: bold; TEXT-DECORATION: none; BACKGROUND: none;}
+.storytitle 	{FONT-FAMILY: Verdana, Arial; COLOR: #363636; FONT-SIZE: 11px; FONT-WEIGHT: bold; TEXT-DECORATION: none; BACKGROUND: none;}
+.boxtitle 	    {FONT-FAMILY: Verdana, Arial; COLOR: #363636; FONT-SIZE: 11px; FONT-WEIGHT: bold; TEXT-DECORATION: none; BACKGROUND: none;}
+.option 	    {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; FONT-WEIGHT: bold; TEXT-DECORATION: none; BACKGROUND: none;}
+.storycat	    {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; FONT-WEIGHT: bold; TEXT-DECORATION: underline; BACKGROUND: none;}
+.tiny		    {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; FONT-WEIGHT: normal; TEXT-DECORATION: none; BACKGROUND: none;}
+.content 	    {FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; BACKGROUND: none;}
+.boxcontent 	{FONT-FAMILY: Verdana, Arial; COLOR: #000000; FONT-SIZE: 11px; BACKGROUND: none;}
+.sideboxtitle 	{FONT-FAMILY: Verdana, Arial; COLOR: #A52D2D; FONT-SIZE: 11px; BACKGROUND: none;}
+.sideboxtitle2 	{FONT-FAMILY: Verdana, Arial; COLOR: #FFFFFF; FONT-SIZE: 11px; BACKGROUND: none;}
+.storyboxtitle 	{FONT-FAMILY: Verdana, Arial; COLOR: #FFFFFF; FONT-SIZE: 11px; BACKGROUND: none;}
+.tablebg		{FONT-FAMILY: Verdana, Arial; BACKGROUND-COLOR: #eeeeee;FONT-SIZE: 11px;}
+
+H3 				{COLOR: #526ba5;}
+H4 				{COLOR: #526ba5;}
+.Issue 			{BACKGROUND-COLOR: #c6c6ce;}
+.NormalField 	{FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: red; FONT-FAMILY: Verdana, Arial;BACKGROUND-COLOR: #ffffff;}
+.NormalFieldTwo {FONT-SIZE: 10pt; COLOR: Red; FONT-FAMILY: Verdana, Arial; background : #E4E4E4; font-weight : bold; }
+.NormalFieldThree {FONT-SIZE: 10pt;	COLOR: Yellow; FONT-FAMILY: Verdana, Arial; background : #0C79B4; font-weight : bold; text-align : center; }
+.NormalFieldFour {FONT-SIZE: 10pt; COLOR: Yellow; FONT-FAMILY: Verdana, Arial;	background : Black;	font-weight : bold;	text-align : center;}
+.NormalFieldFive { FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: Navy; FONT-FAMILY: Verdana, Arial; BACKGROUND-COLOR: #ffffff; }
+.NormalFieldSix {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #526ba5; FONT-FAMILY: Verdana, Arial; BACKGROUND-COLOR: #FFFFFF;}
+.NormalFieldSeven {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #526ba5; FONT-FAMILY: Verdana, Arial; background : #E8E8E8;}
+.Menulink 		{ FONT-SIZE: 8pt;FONT-WEIGHT: bold; }
+.Tabletitle 	{BACKGROUND-COLOR: #003366; color: #FFFFFF; FONT-WEIGHT: bold; }
+.LabelText 		{FONT-SIZE: 9pt; COLOR: #000000; FONT-FAMILY: Verdana, Arial; }
+.TableText 		{FONT-SIZE: 9pt; COLOR: #000000; FONT-FAMILY: Verdana, Arial; }
+.TableBorder	{border-color : Black;}
+.NormalTable 	{BACKGROUND-COLOR: #184997; COLOR: #FFFFFF; }
+.tablebg 		{BACKGROUND-COLOR: #184997; COLOR: #FFFFFF; }
+.tabletop 		{BACKGROUND-COLOR: #003366; COLOR: #FFFFFF; }
+.title 			{BACKGROUND-COLOR: #184997; COLOR: #FFFFFF;  FONT-WEIGHT: bold; FONT-SIZE: 9pt;}
+.tiny 			{BACKGROUND-COLOR: #184997; COLOR: #FFFFFF;  FONT-WEIGHT: bold; FONT-SIZE: 9pt;}
+.sideboxtitle 	{BACKGROUND-COLOR: #000037; COLOR: #FFFFFF;  FONT-WEIGHT: bold; FONT-SIZE: 9pt;}
+.NormalTableTwo {BACKGROUND-IMAGE: url(../images/top_divider.gif);FONT-SIZE: 8pt;FONT-WEIGHT: bold COLOR: #000000;}
+.NormalTablemenu {BACKGROUND-COLOR: #EAE637;FONT-SIZE: 8pt; COLOR: #ffffff; FONT-WEIGHT: bold;}
+.rightBG 		{BACKGROUND-IMAGE: url(../images/bgright_menu.gif);}
+.UsePageBG 		{BACKGROUND-COLOR: #184997; color: #FFFFFF;}
+.marqueBG		{BACKGROUND-COLOR: #000037; color: #FFFFFF;}
+.UseMenuBG 		{BACKGROUND-COLOR: #000000;}
+.bgtopmenu 		{BACKGROUND-IMAGE: url(../images/bgheader_line.gif); FONT-FAMILY:Verdana, Arial; FONT-SIZE: 8pt; COLOR: #ffffff;  FONT-WEIGHT: bold;}
+.bgheader 		{BACKGROUND-IMAGE: url(../images/bgheader.gif);}
+.bgmainheader 	{BACKGROUND-COLOR: #ffcc00; FONT-SIZE: 10pt;  FONT-WEIGHT: bold; }
+.UseMenuBGaa 	{BACKGROUND-COLOR: #ffff66;}
+.UseTableBG 	{BACKGROUND-COLOR: #EED317;}
+.UseDialogBG 	{BACKGROUND-IMAGE: url(../Graphics/Images/DialogBackGround.gif);}
+.ReadOnlyField	{FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #526000; FONT-FAMILY: Verdana, Arial;}
+.InternalHeader {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #000000; FONT-FAMILY: Verdana, Arial; BACKGROUND-COLOR: #6699CC;}
+.AttachedFiles 	{BACKGROUND-COLOR: #99ccff;	color : Black;}
+.SpecialAnchor 	{FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none;}
+UNKNOWN 		{FONT-WEIGHT: lighter; FONT-SIZE: 8pt; TEXT-TRANSFORM: capitalize; COLOR: navy; FONT-STYLE: normal; FONT-FAMILY: 'Verdana, Arial', Times New Roman, Verdana, Arial; FONT-VARIANT: normal; TEXT-DECORATION: underline;}
+.SearchResults 	{FONT-WEIGHT: normal; FONT-SIZE: 8pt; COLOR: #000000; FONT-STYLE: normal; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none;}
+.MandatoryFields {FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: #ff0000; FONT-STYLE: normal; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none;}
+.tab-above-heading {FONT-WEIGHT: bold; FONT-SIZE: 12pt; COLOR: #000000; FONT-STYLE: normal; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none;}
+.textareaLabel 	{FONT-WEIGHT: bolder; FONT-SIZE: 9pt; COLOR: #526ba5; FONT-FAMILY: Verdana, Arial;BACKGROUND-COLOR: #cccccc;}
+.PageTitle 		{FONT-WEIGHT: bold; FONT-SIZE: 16pt; COLOR: #526ba5; FONT-FAMILY: Tahoma;}
+.smallfont 		{FONT-SIZE: 7.5pt; COLOR: #000000; FONT-FAMILY: Verdana, Arial;}

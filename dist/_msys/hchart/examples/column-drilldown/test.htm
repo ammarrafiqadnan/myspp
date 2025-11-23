@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+<script src="hchart/code/highcharts.js"></script>
+<script src="hchart/code/modules/data.js"></script>
+<script src="hchart/code/modules/drilldown.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+		<script type="text/javascript">
+
+// Create the chart
+Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Peratusan Perlaksanaan Program Mengikut Tahun'
+    },
+    subtitle: {
+        //text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Jumlah aktiviti'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:.1f}%'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    series: [{
+        name: 'Aktiviti',
+        colorByPoint: true,
+        data: [{
+            name: '2019',
+            y: 96.33,
+            drilldown: '2019'
+        }, {
+            name: '2020',
+            y: 54.03,
+            drilldown: '2020'
+        }, {
+            name: '2021',
+            y: 10.38,
+            drilldown: '2021'
+        }, {
+            name: '2022',
+            y: 4.77,
+            drilldown: '2022'
+        }, {
+            name: '2023',
+            y: 0.91,
+            drilldown: '2023'
+        }, {
+            name: '2024',
+            y: 2.23,
+            drilldown: '2024'
+        }]
+    }],
+    drilldown: {
+        series: [{
+            name: '2019',
+            id: '2019',
+            data: [
+                [
+                    'Teras 1',
+                    24.13
+                ],
+                [
+                    'Teras 2',
+                    17.2
+                ],
+                [
+                    'Teras 3',
+                    8.11
+                ],
+                [
+                    'Teras 4',
+                    5.33
+                ],
+                [
+                    'Teras 5',
+                    1.06
+                ]
+            ]
+        }, {
+            name: '2020',
+            id: '2020',
+            data: [
+                [
+                    'Teras 1',
+                    5
+                ],
+                [
+                    'Teras 2',
+                    4.32
+                ],
+                [
+                    'Teras 3',
+                    3.68
+                ],
+                [
+                    'Teras 4',
+                    2.96
+                ],
+                [
+                    'Teras 5',
+                    2.53
+                ]
+            ]
+        }, {
+            name: '2021',
+            id: '2021',
+            data: [
+                [
+                    'Teras 1',
+                    2.76
+                ],
+                [
+                    'Teras 2',
+                    2.32
+                ],
+                [
+                    'Teras 3',
+                    2.31
+                ],
+                [
+                    'Teras 4',
+                    1.27
+                ],
+                [
+                    'Teras 5',
+                    1.02
+                ]
+            ]
+        }, {
+            name: '2022',
+            id: '2022',
+            data: [
+                [
+                    'Teras 1',
+                    2.56
+                ],
+                [
+                    'Teras 2',
+                    0.77
+                ],
+                [
+                    'Teras 3',
+                    0.42
+                ],
+                [
+                    'Teras 4',
+                    0.3
+                ],
+                [
+                    'Teras 5',
+                    0.29
+                ]
+            ]
+        }, {
+            name: '2023',
+            id: '2023',
+            data: [
+                [
+                    'Teras 1',
+                    5.34
+                ],
+                [
+                    'Teras 2',
+                    10.24
+                ],
+                [
+                    'Teras 3',
+                    87.17
+                ],
+                [
+                    'Teras 4',
+                    56.16
+                ],
+                [
+                    'Teras 5',
+                    66.16
+                ]
+            ]
+        }]
+    }
+});
+		</script>
+	</body>
+</html>

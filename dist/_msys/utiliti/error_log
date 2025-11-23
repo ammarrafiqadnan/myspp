@@ -1,0 +1,28 @@
+[07-Nov-2022 09:32:40 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:40 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:40 UTC] PHP Warning:  include(): Failed opening '../connection/common.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:40 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function tosql() in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php:88
+Stack trace:
+#0 {main}
+  thrown in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 88
+[07-Nov-2022 09:32:47 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:47 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:47 UTC] PHP Warning:  include(): Failed opening '../connection/common.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:32:47 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function tosql() in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php:88
+Stack trace:
+#0 {main}
+  thrown in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 88
+[07-Nov-2022 09:32:51 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/userpwd_form.php on line 107
+[07-Nov-2022 09:32:51 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/userpwd_form.php on line 107
+[07-Nov-2022 09:32:51 UTC] PHP Warning:  include(): Failed opening '../connection/common.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/utiliti/userpwd_form.php on line 107
+[07-Nov-2022 09:32:51 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function tosql() in /home/erawhizi/public_html/myapps/_msys/utiliti/userpwd_form.php:111
+Stack trace:
+#0 {main}
+  thrown in /home/erawhizi/public_html/myapps/_msys/utiliti/userpwd_form.php on line 111
+[07-Nov-2022 09:33:04 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:33:04 UTC] PHP Warning:  include(../connection/common.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:33:04 UTC] PHP Warning:  include(): Failed opening '../connection/common.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 83
+[07-Nov-2022 09:33:04 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function tosql() in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php:88
+Stack trace:
+#0 {main}
+  thrown in /home/erawhizi/public_html/myapps/_msys/utiliti/profile_form.php on line 88

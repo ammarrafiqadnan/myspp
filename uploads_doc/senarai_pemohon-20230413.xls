@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>mySPP</title>
+<!--<link href="css/printsurat.css" rel="stylesheet" type="text/css" media="screen">
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+    <link href="../css/style.css" type="text/css" rel="stylesheet" media="all">-->
+<style type="text/css">
+FONT{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TABLE{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TH{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TD{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+BODY{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+P{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+DIV{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+
+.title{
+	background-color:#CCCCCC;
+	font-weight:bold;
+}
+.td_data{
+	border-bottom-style:dotted; 
+	border-bottom-width:thin;
+}
+@media screen {
+  div.divHeader {
+    display: none;
+  }
+  div.divFooter {
+    display: none;
+  }
+}
+@media print {
+  div.divHeader {
+	text-align:right;
+    position: fixed;
+    top: 0;
+  }
+  div.divFooter {
+    position: fixed;
+    bottom: 0;
+	width:100%;
+  }
+}
+
+.header, .header-space {
+  height: 20px;
+}
+.footer, .footer-space {
+  height: 12px;
+}
+@page {
+	margin-left:17mm;
+	margin-right:17mm;
+	margin-top:5mm;
+  	margin-bottom: 5mm
+}
+.header {
+  position: fixed;
+  top: 0;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+}
+</style>
+</head>
+<body style="width: 100%;">
+	
+<table border="0" style="width: 100%;">
+	<thead>
+		<tr><td>
+			<div class="header-space">&nbsp;</div>
+		</td></tr>
+	</thead>
+	
+	<tbody>
+		<tr><td>
+			<table align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
+				<tbody>
+					<tr>
+						<td valign="top">
+							<div class="box" style="background-color:#F2F2F2">
+    <b>Maklumat Senarai Pemohon</b>
+    <div class="box-body" style="background-color:#F2F2F2">
+        <table width="100%" cellpadding="5" cellspacing="0" border="1">
+            <thead  style="background-color:rgb(209 29 29)">
+                <th width="5%"><font color="#000000"><div align="center">Bil</div></font></th>
+                <th width="28%" id="namaPemohon" name="namaPemohon">
+                    <font color="#000000">
+                        <div align="center">Nama Pemohon/Daftar/Kemaskini
+                        </div>
+                    </font>
+                </th>
+                <th width="18%">
+                    <font color="#000000">
+                        <div align="center">No. Kad Pengenalan
+                        </div>
+                    </font>
+                </th>
+                <th width="10%">
+                    <font color="#000000">
+                        <div align="center">Negeri
+                        </div>
+                    </font>
+                </th>
+                <th width="20%"><font color="#000000"><div align="center">Skim Jawatan</div></font></th>
+                <th width="9%">
+                    <font color="#000000">
+                        <div align="center">Status 
+                    </font>
+                </th>
+            </thead>
+            <tbody>
+        
+            	
+                                        <tr>
+                        <td align="center">1</td>
+                        <td align="left">
+                            'AINATUL RAIYAN BINTI SHARBINI <br><br>
+                            Daftar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 19/03/2020&nbsp;&nbsp;(10:45:42)<br>
+                            Kemas Kini : 17/03/2021&nbsp;&nbsp;(23:24:07)                        </td>
+                        <td align="center">950919135154</td>
+                        <td align="center">SARAWAK</td>
+                        <td>
+                            1. PEGAWAI PERKHIDMATAN PENDIDIKAN GRED DG41<br>                        </td>
+                        <td align="center">
+                                                            <button class="btn-success badge">Hantar</button>
+                                                    </td>
+                    </tr>
+                            </tbody>
+        </table>
+    </div>
+</div>   
+
+          						</td>
+					</tr>
+				</tbody>
+			</table>
+		</td></tr>
+	</tbody>
+	
+	<tfoot><tr><td>
+		<div class="footer-space">&nbsp;</div>
+		</td></tr>
+	</tfoot>
+</table>
+
+
+
+
+</body>
+</html>

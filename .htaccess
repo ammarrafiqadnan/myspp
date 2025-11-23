@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=16070400"
+	Options -Indexes
+	DirectoryIndex index.html index.cgi index.php 
+</IfModule>
+
+
+Header append X-FRAME-OPTIONS "SAMEORIGIN"

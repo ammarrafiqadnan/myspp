@@ -1,0 +1,8 @@
+[07-Nov-2022 02:45:59 UTC] PHP Notice:  Undefined variable: menu in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 2
+[07-Nov-2022 02:45:59 UTC] PHP Notice:  Undefined variable: id in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 7
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(akademik/spm1.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 26
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(akademik/spm1.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 26
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(): Failed opening 'akademik/spm1.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 26
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(akademik/spm2.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 29
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(akademik/spm2.php): failed to open stream: No such file or directory in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 29
+[07-Nov-2022 02:45:59 UTC] PHP Warning:  include(): Failed opening 'akademik/spm2.php' for inclusion (include_path='.:/opt/alt/php73/usr/share/pear') in /home/erawhizi/public_html/myapps/_msys/pemohon/maklumat_pemohon.php on line 29

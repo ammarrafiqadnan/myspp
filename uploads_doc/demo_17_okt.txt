@@ -1,0 +1,37 @@
+Dashboard
+-ikon di dashboard kena tukar
+- pembetulan ejaan/ perkataan di SKM
+- tambah draft di ikon Pemantauan baru 
+
+
+Maklumat pemantauan di ketua Bahagian
+-tambah Operasi (o) di setiap timbalan pengarah
+
+Kajian Bahan Gunaan dan bahan penerbitan
+- tambah lampiran utk muat naik gambar
+
+Ikon tambah kajian kena semak semula
+
+Di semua menu- carian berdasarkan status
+
+Cetakan tidak berfungsi di sesetengah menu
+
+Sediakan cetakan/excel dan word di menu data pemegang SKM
+
+
+Pengurusan data media-->isu agama di akbar
+- Sediakan report tahunan bukan berdasarkan bulan
+
+isu agama di media massa
+- minggu bukan mandatori
+
+kalau boleh auto save di pengurusan data, 
+
+
+
+proses: apa2 kajian yang telah dikembalikan akan bertukar kepada Draft
+
+
+guna ubuntu untuk server
+
+Gambar kena control, crop masa nak simpan

@@ -1,0 +1,180 @@
+<?php //include '../connection/common.php'; ?>
+<?php //include '../connection/common.php'; ?>
+<script language="javascript">
+function save_svm(val){
+	var svm_tahun_1 = $('#svm_tahun_1').val();
+	var svm_jenis_sijil_1 = $('#svm_jenis_sijil_1').val();
+	var svm_sijil_1 = $('#svm_sijil_1').val();
+	var gred_bm_1 = $('#gred_bm_1').val();
+	var svm_pngk = $('#svm_pngk').val();
+	var svm_pngkv = $('#svm_pngkv').val();
+	var msg = '';
+
+    if(svm_tahun_1.trim()==''){
+        msg = msg+'\n- Sila pilih tahun peperiksaan SVM.';
+        $("#svm_tahun_1").css("border-color","#f00");
+    } 
+    if(svm_jenis_sijil_1.trim()==''){
+        msg = msg+'\n- Sila pilih jenis sijil.';
+        $("#svm_jenis_sijil_1").css("border-color","#f00");
+    } 
+    if(svm_sijil_1.trim()==''){
+        msg = msg+'\n- Sila pilih nama sijil.';
+        $("#svm_sijil_1").css("border-color","#f00");
+    }
+    if(gred_bm_1.trim()==''){
+        msg = msg+'\n- Sila pilih gred Bahasa Melayu.';
+        $("#gred_bm_1").css("border-color","#f00");
+    }
+    if(svm_pngk.trim()=='' || svm_pngk.trim()=='0.00'){
+        msg = msg+'\n- Sila masukkan maklumat PNGK peperiksaan..';
+        $("#svm_pngk").css("border-color","#f00");
+    }
+    if(svm_pngkv.trim()=='' || svm_pngkv.trim()=='0.00'){
+        msg = msg+'\n- Sila masukkan maklumat PNGKV peperiksaan SVM.';
+        $("#svm_pngkv").css("border-color","#f00");
+    }
+
+	if(msg.trim() !=''){ 
+		alert_msg_html(msg);
+	} else { 
+		var fd = new FormData();
+        var files1 = $('#file_pmr')[0].files[0];
+        // var files2 = $('#upload_id2')[0].files[0];
+        fd.append('file_pmr',files1);
+        // fd.append('upload_id2',files2);
+
+        var other_data = $('form').serializeArray();
+		$.each(other_data,function(key,input){
+		    fd.append(input.name,input.value);
+		});
+
+        $.ajax({
+	        url:'akademik/sql_akademik.php?frm=SVM&pro=SAVE',
+			type:'POST',
+	        //dataType: 'json',
+	        beforeSend: function () {
+	            // $('.btn-primary').attr("disabled","disabled");
+	            // $('.modal-body').css('opacity', '.5');
+	        },
+			// data: $("form").serialize(),
+			data:  fd,
+            contentType: false,
+            cache: false,
+            processData:false,
+			success: function(data){
+				console.log(data);
+				if(data=='OK'){
+					swal({
+					  title: 'Berjaya',
+					  text: 'Maklumat telah berjaya dikemaskini',
+					  type: 'success',
+					  confirmButtonClass: "btn-success",
+					  confirmButtonText: "Ok",
+					  showConfirmButton: true,
+					}).then(function () {
+						refresh = window.location; 
+						window.location = refresh;
+					});
+				} else if(data=='ERR'){
+					swal({
+					  title: 'Amaran',
+					  text: 'Terdapat ralat sistem.\nMaklumat anda tidak berjaya dikemaskini.',
+					  type: 'error',
+					  confirmButtonClass: "btn-warning",
+					  confirmButtonText: "Ok",
+					  showConfirmButton: true,
+					});
+				}
+				
+			}
+		});
+	}
+}
+
+</script>
+<?php
+include 'akademik/sql_akademik.php';
+$data = get_exam($conn,$_SESSION['SESS_UID']);
+// print_r($data);
+$uid = $data['id_pemohon'];
+$tahun = $data['spm_tahun_1'];
+?>
+	<header class="panel-heading" style="background-color:#0088cc;">
+		<h6 class="panel-title"><font color="#fff" size="3"><b><?php print strtoupper($menu);?></b></font></h6>
+	</header>
+	<div class="panel-body">
+		<div class="box-body">
+
+		<input type="hidden" name="id_pemohon" id="id_pemohon" value="<?php print $uid;?>" readonly="readonly"/>
+
+			<div class="col-md-12">
+
+				<?php //include 'biodata/biodata_view.php'; ?>
+
+				<div class="form-group">
+					<div class="row">
+						<!--<p>
+						  <button class="btn btn-primary form-control" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" title="Sila klik untuk membaca arahan berkaitan kemasukan data akademik SPM">
+						    ARAHAN:
+						  </button>
+						</p>-->
+						<!-- <div class="collapse" id="collapseExample"> -->
+						  <div class="card" style="background-color: #000;">
+								<label for="nama" class="col-sm-12 control-label" style="border: 1px solid rgb(38, 167, 228);"><b>ARAHAN : Sila Masukkan Maklumat SVM Dengan Keputusan Terbaik</b>
+									<ul>
+										<li>Sijil Am Pelajaran (SAP) adalah tidak setaraf dengan SPM/SPVM/SVM dan oleh itu pemohon yang memilikinya, sila isikan Ruangan Peperiksaan Tambahan</li>
+									</ul>
+									<hr>
+								</label>
+
+						  </div>
+						<!-- </div> -->
+					</div>
+
+
+					<?php 
+				    $hrefs1 = "index.php?data=".base64_encode('akademik/spm;MAKLUMAT AKADEMIK;Maklumat SPM/SPVM/SPM(V);;1;;');  
+				    $hrefs2 = "index.php?data=".base64_encode('akademik/spm;MAKLUMAT AKADEMIK;Maklumat SPM/SPVM/SPM(V);;2;;');  
+				    if($actions==2){ $bg1= ''; $bg2='style="color: blue;"'; }
+				    else { $bg1= 'style="color: blue;"'; $bg2=''; }
+				    ?>
+				        
+		            <input type="hidden" name="plik_id" id="plik_id" value="<?php print $id;?>" readonly="readonly"/>
+		    
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li <?php if($actions=="1"){ print 'class="active"'; }?>><a href="#"><b <?=$bg1;?>>Maklumat Peperiksaan Kali Pertama</b></a></li>
+                        <?php //if(!empty($data['spm_tahun_2'])){ ?>
+                        	<!-- <li <?php if($actions=="2"){ print 'class="active"'; }?>><a href="<?=$hrefs2;?>"><b <?=$bg2;?>>Maklumat Peperiksaan Kali Kedua</b></a></li> -->
+                    	<?php //} ?>
+
+
+                        <?php if(empty($data['spm_tahun_2'])){ ?>
+                        <!-- <li <?php if($actions=="2"){ print 'class="active"'; }?>> -->
+                        	<!-- <a href="akademik/spm_add.php?id_pemohon=<?=$uid;?>&tahun=<?=$data['spm_tahun_1'];?>" data-toggle="modal" data-target="#myModal" title="Tambah Maklumat" class="fa" data-backdrop=""><button type="button" class="btn btn-primary"><i class=" fa fa-plus-square"></i> <font style="font-family:Verdana, Geneva, sans-serif"> Tambah Maklumat Peperiksaan Ke-2</font></button></a> -->
+						<!-- </li> -->
+                    	<?php } ?>
+
+                    </ul>
+                    
+
+                    <div class="tab-content tabs">
+                        <?php 
+                        if($actions==1){ 
+                        	include 'akademik/svm1.php';
+                        } else if($actions=='2'){
+                        	include 'akademik/svm1.php';
+                            // include 'akademik/spm2.php';
+                        }
+                        ?>
+                    </div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	     
+
+<script language="javascript" type="text/javascript">
+//document.frm.gsasar_nama.focus();
+</script>		 

@@ -1,0 +1,38 @@
+[08-Apr-2022 06:14:39 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:15:14 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:15:45 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:15:45 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:16:20 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:16:21 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:16:23 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:16:23 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:16:41 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:16:42 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:17:09 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:17:10 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:17:32 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:17:45 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:18:21 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:18:21 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:20:01 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[08-Apr-2022 06:20:01 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`smtp.gmail.com' did not match expected CN=`74.125.200.108' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343
+[08-Apr-2022 06:20:51 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[07-Apr-2022 22:45:25 UTC] PHP Parse error:  syntax error, unexpected '$tajuk' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/test1.php on line 30
+[07-Apr-2022 22:45:30 UTC] PHP Parse error:  syntax error, unexpected '$tajuk' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/test1.php on line 30
+[07-Apr-2022 22:45:50 UTC] PHP Parse error:  syntax error, unexpected '$tajuk' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/test1.php on line 30
+[07-Apr-2022 22:46:08 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:46:11 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:48:24 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:48:33 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:48:33 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:48:33 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:48:33 UTC] PHP Parse error:  syntax error, unexpected '$header' (T_VARIABLE) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 8
+[07-Apr-2022 22:49:20 UTC] PHP Parse error:  syntax error, unexpected '" \r\n"' (T_CONSTANT_ENCAPSED_STRING) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 9
+[07-Apr-2022 22:49:23 UTC] PHP Parse error:  syntax error, unexpected '" \r\n"' (T_CONSTANT_ENCAPSED_STRING) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 9
+[07-Apr-2022 22:49:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mail_send() in /home/dataspe/public_html/eamh/_msys/email/test1.php:36
+Stack trace:
+#0 {main}
+  thrown in /home/dataspe/public_html/eamh/_msys/email/test1.php on line 36
+[07-Apr-2022 22:50:02 UTC] PHP Parse error:  syntax error, unexpected '" \r\n"' (T_CONSTANT_ENCAPSED_STRING) in /home/dataspe/public_html/eamh/_msys/email/mail_send.php on line 9
+[08-Apr-2022 07:16:14 Asia/Kuala_Lumpur] PHP Deprecated:  __autoload() is deprecated, use spl_autoload_register() instead in /home/dataspe/public_html/eamh/_msys/email/PHPMailerAutoload.php on line 45
+[28-Sep-2022 15:10:21 Asia/Kuala_Lumpur] PHP Warning:  stream_socket_enable_crypto(): Peer certificate CN=`mx.google.com' did not match expected CN=`142.250.4.26' in /home/dataspe/public_html/eamh/_msys/email/class.smtp.php on line 343

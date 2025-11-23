@@ -1,0 +1,144 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>mySPP</title>
+<!--<link href="css/printsurat.css" rel="stylesheet" type="text/css" media="screen">
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+    <link href="../css/style.css" type="text/css" rel="stylesheet" media="all">-->
+<style type="text/css">
+FONT{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TABLE{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TH{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+TD{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+BODY{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+P{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+DIV{FONT-SIZE: 12px;FONT-FAMILY: Arial;COLOR: #000000}
+
+.title{
+	background-color:#CCCCCC;
+	font-weight:bold;
+}
+.td_data{
+	border-bottom-style:dotted; 
+	border-bottom-width:thin;
+}
+@media screen {
+  div.divHeader {
+    display: none;
+  }
+  div.divFooter {
+    display: none;
+  }
+}
+@media print {
+  div.divHeader {
+	text-align:right;
+    position: fixed;
+    top: 0;
+  }
+  div.divFooter {
+    position: fixed;
+    bottom: 0;
+	width:100%;
+  }
+}
+
+.header, .header-space {
+  height: 20px;
+}
+.footer, .footer-space {
+  height: 12px;
+}
+@page {
+	margin-left:17mm;
+	margin-right:17mm;
+	margin-top:5mm;
+  	margin-bottom: 5mm
+}
+.header {
+  position: fixed;
+  top: 0;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+}
+</style>
+</head>
+<body style="width: 100%;">
+	
+<table border="0" style="width: 100%;">
+	<thead>
+		<tr><td>
+			<div class="header-space">&nbsp;</div>
+		</td></tr>
+	</thead>
+	
+	<tbody>
+		<tr><td>
+			<table align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
+				<tbody>
+					<tr>
+						<td valign="top">
+							
+
+
+        <div class="box" style="background-color:#F2F2F2">
+            <b>Senarai Panggilan Temuduga</b>
+
+            
+            <div class="box-body" style="background-color:#F2F2F2">
+                <table width="100%" cellpadding="5" cellspacing="0" border="1">
+                    <thead  style="background-color:rgb(209 29 29)">
+                        <th width="10%"><font color="#000000"><div align="center">No.</div></font></th>
+                        <th width="10%"><font color="#000000"><div align="center">No. Pemerolehan</div></font></th>
+                        <th width="15%"><font color="#000000"><div align="center">Nama</div></font></th>
+                        <th width="10%"><font color="#000000"><div align="center">No. K/P</div></font></th>
+                        <th width="15%"><font color="#000000"><div align="center">Skim Jawatan</div></font></th>
+                        <th width="10%"><font color="#000000"><div align="center">Tarikh</div></font></th>
+                        <th width="15%"><font color="#000000"><div align="center">Tempat</div></font></th>
+
+                    </thead>
+                    <tbody>
+                
+                                            <tr>
+                            <td align="center">1</td>
+                            <td align="center">1122</td>
+                            <td align="center">AINAA 'IZZATI BALQIS BINTI ZEFRI</td>
+                            <td align="center">&nbsp;010404089999</td>
+                            <td align="center">PEGAWAI PERKHIDMATAN PENDIDIKAN GRED DH41</td>
+                            <!-- <td align="center">03-01-2023<br>09:00 AM</td> -->
+                            <td align="center">03-01-2023</td>
+                            <td align="center">SPP</td>
+                        </tr>
+                                            <tr>
+                            <td align="center">2</td>
+                            <td align="center">1122</td>
+                            <td align="center">ABDUL RAHMAN</td>
+                            <td align="center">&nbsp;011002149999</td>
+                            <td align="center">PEGAWAI PERKHIDMATAN PENDIDIKAN GRED DH41</td>
+                            <!-- <td align="center">03-02-2023<br>10:00 AM</td> -->
+                            <td align="center">03-02-2023</td>
+                            <td align="center">SPP</td>
+                        </tr>
+                                        </tbody>
+                </table>
+            </div>
+		</div> 						</td>
+					</tr>
+				</tbody>
+			</table>
+		</td></tr>
+	</tbody>
+	
+	<tfoot><tr><td>
+		<div class="footer-space">&nbsp;</div>
+		</td></tr>
+	</tfoot>
+</table>
+
+
+
+
+</body>
+</html>
