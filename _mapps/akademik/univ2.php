@@ -295,32 +295,36 @@ function check_univ_integration_2() {
     var status = $('#status_data_2').val();
     
     if (status == 'false') {
-        var id_pemohon = $('#id_pemohon').val();
+        if (typeof fetchAndMapUniversityData !== 'function') {
+            console.warn('kpt-api-client.js not loaded.');
+            return;
+        }
         
-        $.ajax({
-            url: 'akademik/sql_akademik.php?frm=UNIV&pro=FETCH_UNIV_API',
-            type: 'POST',
-            data: { id_pemohon: id_pemohon },
-            dataType: 'json',
-			beforeSend: function() {
-                swal({ title: '', text: '', showConfirmButton: false, allowOutsideClick: false, html: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>' });
-            },
-            success: function(res) {
-                swal.close();
-                // AMBIL DATA INDEX 1 (Data kedua)
-                if (res.status == 'OK' && res.data.length > 1) {
-                    var d = res.data[1]; // DATA KE-2
-                    
-                    // swal({
-                    //     title: "Data Integrasi (Keputusan 2) Ditemui",
-                    //     text: "Borang telah diisi secara automatik.",
-                    //     type: "success",
-                    //     timer: 2000
-                    // });
+        var no_ic = ($('#sess_uic').val && $('#sess_uic').val()) || '<?= $_SESSION['SESS_UIC']; ?>';
+        if (!no_ic) {
+            console.warn('No IC found for API lookup.');
+            return;
+        }
+        
+        swal({ 
+            title: '', 
+            text: '', 
+            showConfirmButton: false, 
+            allowOutsideClick: false, 
+            html: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><p>Mencari data universiti (Keputusan 2)...</p>' 
+        });
 
-                    fillAndLockFields_2(d);
-                }
+        fetchAndMapUniversityData(no_ic).then(function(result) {
+            swal.close();
+            if (result.status === 'OK' && result.data && result.data.length > 1) {
+                var d = result.data[1]; // DATA KE-2
+                fillAndLockFields_2(d);
+            } else {
+                console.warn('API fetch failed (Keputusan 2):', result.msg);
             }
+        }).catch(function(error) {
+            swal.close();
+            console.error('Error fetching university data (Keputusan 2):', error);
         });
     }
 }

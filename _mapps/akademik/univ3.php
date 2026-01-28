@@ -311,29 +311,37 @@ function check_univ_integration_3() {
     
     // Hanya tarik jika data tiada
     if (status == 'false') {
-        var id_pemohon = $('#id_pemohon').val();
+        if (typeof fetchAndMapUniversityData !== 'function') {
+            console.warn('kpt-api-client.js not loaded.');
+            return;
+        }
         
-        $.ajax({
-            url: 'akademik/sql_akademik.php?frm=UNIV&pro=FETCH_UNIV_API',
-            type: 'POST',
-            data: { id_pemohon: id_pemohon },
-            dataType: 'json',
-            // Loader optional (mungkin dah keluar masa tab 1)
-            success: function(res) {
-                // AMBIL DATA INDEX 2 (KEPUTUSAN KETIGA)
-                if (res.status == 'OK' && res.data.length > 2) {
-                    var d = res.data[2]; 
-                    
-                    swal({
-                        title: "Data Integrasi 3 Ditemui",
-                        text: "Borang telah diisi secara automatik.",
-                        type: "success",
-                        timer: 2000
-                    });
+        var no_ic = ($('#sess_uic').val && $('#sess_uic').val()) || '<?= $_SESSION['SESS_UIC']; ?>';
+        if (!no_ic) {
+            console.warn('No IC found for API lookup.');
+            return;
+        }
+        
+        swal({ 
+            title: '', 
+            text: '', 
+            showConfirmButton: false, 
+            allowOutsideClick: false, 
+            html: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><p>Mencari data universiti (Keputusan 3)...</p>' 
+        });
 
-                    fillAndLockFields_3(d);
-                }
+        // Call client-side API function
+        fetchAndMapUniversityData(no_ic).then(function(result) {
+            swal.close();
+            if (result.status === 'OK' && result.data && result.data.length > 2) {
+                var d = result.data[2]; 
+                fillAndLockFields_3(d);
+            } else {
+                console.warn('API fetch failed (Keputusan 3):', result.msg);
             }
+        }).catch(function(error) {
+            swal.close();
+            console.error('Error fetching university data (Keputusan 3):', error);
         });
     }
 }

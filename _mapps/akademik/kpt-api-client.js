@@ -4,6 +4,29 @@
  */
 
 /**
+ * Fetch JSON with timeout support
+ * @param {string} url - Request URL
+ * @param {Object} options - Fetch options
+ * @param {number} timeoutMs - Timeout in milliseconds
+ * @returns {Promise<{response: Response, data: any}>}
+ */
+async function fetchJsonWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        const data = await response.json().catch(() => null);
+        return { response, data };
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+/**
  * Call KPT SKPG API to fetch university data
  * @param {string} no_kp - No Kad Pengenalan (IC Number)
  * @returns {Promise} - API response with success status, data, and HTTP code
@@ -16,23 +39,32 @@ async function callKptSkpgApi(no_kp) {
         no_kp: no_kp
     };
     
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    };
+    
     try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(payload),
-            timeout: 60000 // 60 seconds timeout
-        });
+        // Primary attempt: POST with JSON body
+        let result = await fetchJsonWithTimeout(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+        }, 60000);
         
-        const data = await response.json();
+        // Fallback: some APIs only accept GET
+        if (result.response.status === 400 || result.response.status === 405) {
+            const getUrl = url + '?no_kp=' + encodeURIComponent(no_kp);
+            result = await fetchJsonWithTimeout(getUrl, {
+                method: 'GET',
+                headers
+            }, 60000);
+        }
         
         return {
-            success: response.ok,
-            data: data,
-            http_code: response.status
+            success: result.response.ok,
+            data: result.data,
+            http_code: result.response.status
         };
     } catch (error) {
         return {
@@ -113,7 +145,7 @@ function mapKptApiData(apiDataArray, institutionMap = {}, courseMap = {}) {
  */
 async function fetchInstitutionMapping() {
     try {
-        const response = await fetch('akademik/api-mapping.php?action=get_institution_map');
+        const response = await fetch('api-mapping.php?action=get_institution_map');
         return await response.json();
     } catch (error) {
         console.warn('Failed to fetch institution mapping:', error);
@@ -128,7 +160,7 @@ async function fetchInstitutionMapping() {
  */
 async function fetchCourseMapping() {
     try {
-        const response = await fetch('akademik/api-mapping.php?action=get_course_map');
+        const response = await fetch('api-mapping.php?action=get_course_map');
         return await response.json();
     } catch (error) {
         console.warn('Failed to fetch course mapping:', error);
