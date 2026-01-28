@@ -2,7 +2,7 @@
 //$ip = $_SERVER['HTTP_HOST'];
 $ip =isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:"";
 
-if($ip=='localhost'){
+if($ip=='myspp.test'){
 
 	//$actual_link = 'http://localhost/myspp/apps/index.php?data='.$data;
 	$username="root"; //------------your username usually root

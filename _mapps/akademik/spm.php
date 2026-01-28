@@ -14,6 +14,12 @@ function set_spm(fields, vals, ty){
 	var actions = $('#actions').val();
 	//alert(actions); exit;
 
+if ($('#spm_integrasi_container').is(':visible')) {
+        $('#is_integrasi_input').val('Y');
+    } else {
+        $('#is_integrasi_input').val('T');
+    }
+
 	if(spm_jenis_sijil_1 == '6' && spm_tahun!=''){
 		swal({
 		  title: 'Amaran',
@@ -180,8 +186,7 @@ function save_spm(val){
 					  confirmButtonText: "Ok",
 					  showConfirmButton: true,
 					}).then(function () {
-						refresh = window.location; 
-						window.location = refresh;
+						window.location.reload();
 					});
 				} else if(data=='ERR'){
 					swal({
@@ -419,11 +424,11 @@ if($actions==2){
 					// print $disp2;
 				    ?>
 				        
-		    <?php if(!empty($data['spm_jenis_sijil_1'])){ ?>
+		    <!-- <?php if(!empty($data['spm_jenis_sijil_1'])){ ?>
 			<div style="float:right;">
 				<label class="btn btn-danger" onclick="do_hapus_spm('akademik/sql_akademik.php?frm=SPM&pro=SPM_DELALL&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus Semua Maklumat</label>
 			</div>
-		    <?php } ?>
+		    <?php } ?> -->
 
                     <ul class="nav nav-tabs" role="tablist">
                         <li <?php if($actions=="1"){ print 'class="active"'; }?>><a href="<?=$hrefs1;?>"><b <?=$bg1;?>>Maklumat Peperiksaan Pertama</b></a></li>

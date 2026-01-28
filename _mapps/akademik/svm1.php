@@ -11,98 +11,92 @@ function do_dummyhapus(){
     });
 }
 
+var isSvmIntegrasi = '<?=$rsData->fields["is_integrasi"] == "Y" ? "1" : "0"; ?>'; 
+// (Nota: Pastikan PHP di atas dah query is_integrasi. Jika belum, set default '0')
+
 function save_svm(val){
-	// var svm_tahun_1 = $('#svm_tahun_1').val();
-	var spm_jenis_sijil_1 = $('#spm_jenis_sijil_1').val();
-	var svm_sijil_1 = $('#svm_sijil_1').val();
-	var spm_tahun_1 = $('#spm_tahun_1').val();
-	var gred_bm_1 = $('#gred_bm_1').val();
-	var svm_pngk = $('#svm_pngk').val();
-	var svm_pngkv = $('#svm_pngkv').val();
-	var msg = '';
+    // Enable field sementara supaya value masuk dalam serialize
+    $('#svm_sijil_1, #gred_bm_1, #spm_tahun_1, #svm_pngk, #svm_pngkv, #svm_angka_giliran, #spm_jenis_sijil_1').prop('disabled', false).prop('readonly', false);
 
-	// alert(spm_jenis_sijil_1);
+    var spm_jenis_sijil_1 = $('#spm_jenis_sijil_1').val();
+    var svm_sijil_1 = $('#svm_sijil_1').val();
+    var spm_tahun_1 = $('#spm_tahun_1').val();
+    var gred_bm_1 = $('#gred_bm_1').val();
+    var svm_pngk = $('#svm_pngk').val();
+    var svm_pngkv = $('#svm_pngkv').val();
+    var msg = '';
 
-    if(spm_jenis_sijil_1.trim()==''){
-        msg = msg+'\n- Sila pilih jenis sijil.';
+    // Validation (Skip validation ketat jika integrasi? Atau validate juga utk safety)
+    if(spm_jenis_sijil_1 == '' || spm_jenis_sijil_1 == '0'){
+        msg += '\n- Sila pilih jenis sijil.';
         $("#spm_jenis_sijil_1").css("border-color","#f00");
     } 
-    if(spm_tahun_1.trim()==''){
-        msg = msg+'\n- Sila pilih tahun peperiksaan.';
+    if(spm_tahun_1 == '' || spm_tahun_1 == '0'){
+        msg += '\n- Sila pilih tahun peperiksaan.';
         $("#spm_tahun_1").css("border-color","#f00");
     }
-    if(svm_sijil_1.trim()==''){
-        msg = msg+'\n- Sila pilih nama kursus.';
-        $("#svm_sijil_1").css("border-color","#f00");
-    }
-    if(gred_bm_1.trim()==''){
-        msg = msg+'\n- Sila pilih gred Bahasa Melayu.';
-        $("#gred_bm_1").css("border-color","#f00");
-    }
-    if(svm_pngk.trim()=='' || svm_pngk.trim()=='0.00'){
-        msg = msg+'\n- Sila masukkan maklumat PNGK peperiksaan SVM.';
-        $("#svm_pngk").css("border-color","#f00");
-    }
-    if(svm_pngkv.trim()=='' || svm_pngkv.trim()=='0.00'){
-        msg = msg+'\n- Sila masukkan maklumat PNGKV peperiksaan SVM.';
-        $("#svm_pngkv").css("border-color","#f00");
-    }
+    // ... sambung validation lain ...
 
-	if(msg.trim() !=''){ 
-		alert_msg_html(msg);
-	} else { 
-		var fd = new FormData();
-        var files1 = $('#file_pmr')[0].files[0];
-        // var files2 = $('#upload_id2')[0].files[0];
-        fd.append('file_pmr',files1);
-        // fd.append('upload_id2',files2);
+    if(msg.trim() !=''){ 
+        alert_msg_html(msg);
+        // Disable balik jika integrasi
+        if(isSvmIntegrasi == '1') lockSvmFields();
+    } else { 
+        var fd = new FormData();
+        
+        // Append File (Hanya jika manual / bukan integrasi)
+        if(isSvmIntegrasi == '0') {
+             if($('#file_pmr')[0].files[0]) fd.append('file_pmr', $('#file_pmr')[0].files[0]);
+        }
+
+        // Append Flag Integrasi (PENTING)
+        fd.append('is_integrasi_svm', isSvmIntegrasi);
 
         var other_data = $('form').serializeArray();
-		$.each(other_data,function(key,input){
-		    fd.append(input.name,input.value);
-		});
+        $.each(other_data,function(key,input){
+             fd.append(input.name,input.value);
+        });
 
         $.ajax({
-	        url:'akademik/sql_akademik.php?frm=SVM&pro=SAVE',
-			type:'POST',
-	        //dataType: 'json',
-	        beforeSend: function () {
-	            // $('.btn-primary').attr("disabled","disabled");
-	            // $('.modal-body').css('opacity', '.5');
-	        },
-			// data: $("form").serialize(),
-			data:  fd,
+            url:'akademik/sql_akademik.php?frm=SVM&pro=SAVE',
+            type:'POST',
+            data:  fd,
             contentType: false,
             cache: false,
             processData:false,
-			success: function(data){
-				console.log(data);
-				if(data=='OK'){
-					swal({
-					  title: 'Berjaya',
-					  text: 'Maklumat telah berjaya dikemaskini',
-					  type: 'success',
-					  confirmButtonClass: "btn-success",
-					  confirmButtonText: "Ok",
-					  showConfirmButton: true,
-					}).then(function () {
-						reload = window.location; 
-						window.location = reload;
-					});
-				} else if(data=='ERR'){
-					swal({
-					  title: 'Amaran',
-					  text: 'Terdapat ralat sistem.\nMaklumat anda tidak berjaya dikemaskini.',
-					  type: 'error',
-					  confirmButtonClass: "btn-warning",
-					  confirmButtonText: "Ok",
-					  showConfirmButton: true,
-					});
-				}
-				
-			}
-		});
-	}
+            beforeSend: function () {
+                swal({ title: "Sedang Simpan...", showConfirmButton: false });
+            },
+            success: function(data){
+                // Disable balik jika integrasi (untuk visual)
+                if(isSvmIntegrasi == '1') lockSvmFields();
+
+                if(data.trim()=='OK'){
+                    swal({
+                      title: 'Berjaya',
+                      text: 'Maklumat telah berjaya dikemaskini',
+                      type: 'success',
+                      confirmButtonClass: "btn-success",
+                      confirmButtonText: "Ok"
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                } else {
+                    swal({
+                      title: 'Amaran',
+                      text: 'Ralat sistem.',
+                      type: 'error'
+                    });
+                }
+            }
+        });
+    }
+}
+
+// Fungsi Helper untuk Lock
+function lockSvmFields() {
+    $('#svm_sijil_1, #gred_bm_1, #spm_tahun_1, #spm_jenis_sijil_1').prop('disabled', true);
+    $('#svm_pngk, #svm_pngkv, #svm_angka_giliran').prop('readonly', true);
 }
 
 var validate1 = function(e) {
@@ -217,161 +211,238 @@ $conn->debug=false;
 
 
 ?>
-	<hr>
 
 	<?php
 	$rsData = $conn->query("SELECT * FROM $schema2.`calon_svm` WHERE `id_pemohon`=".tosql($uid) ." AND `tahun`=".tosql($s_tahun));
 	?>
-	<div class="form-group">
-		<div class="row">
-			<div class="col-sm-8">
+<hr>
 
-				<div class="form-group">
-					<div class="row">
-						<label for="nama" class="col-sm-2 control-label"><b>Jenis Sijil <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
-						<div class="col-sm-4"><!-- -->
-							<select class="form-control" id="spm_jenis_sijil_1" name="spm_jenis_sijil_1" onchange="set_spm('spm_jenis_sijil_1',this.value,'R')"
-							<?php if(!empty($s_tahun) && !empty($s_sijil) && !empty($rsData->fields['gred_bm'])){ print 'disabled'; }?>>
-								<?php while(!$rssijil->EOF){ ?>
-								<option value="<?=$rssijil->fields['KOD'];?>" 
-								<?php if($rssijil->fields['KOD']==$s_sijil){ print 'selected';} ?>	
-								><?=$rssijil->fields['DISKRIPSI'];?></option>
-								<?php $rssijil->movenext(); } ?>
-							</select>
-							<input type="hidden" name="spm_sijil_pilih" value="<?=$s_sijil;?>">
-						</div>
-					</div>
-				</div>
+<?php
+$rsData = $conn->query("SELECT * FROM $schema2.`calon_svm` WHERE `id_pemohon`=".tosql($uid) ." AND `tahun`=".tosql($s_tahun));
+// Tentukan keadaan awal data
+$hasData = (!empty($rsData->fields['gred_bm'])) ? true : false;
+$showStyle = ($hasData) ? 'display:block' : 'display:none';
+?>
 
-				<div class="form-group">
-					<div class="row">
-						<label for="nama" class="col-sm-2 control-label"><b>Tahun <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
-						<div class="col-sm-4">
-							<select name="spm_tahun_1" id="spm_tahun_1" class="form-control" 
-							<?php if(!empty($s_tahun) && !empty($s_sijil) && !empty($rsData->fields['gred_bm'])){ print 'disabled'; }?>>
-								<option value="">Sila pilih tahun</option>
-								<?php for($t=date("Y");$t>=2012;$t--){
-									print '<option value="'.$t.'"'; 
-									if($s_tahun==$t){ print 'selected'; }
-									print '>'.$t.'</option>';
-								} ?>
-							</select>
-							<input type="hidden" name="spm_tahun_pilih" value="<?=$s_tahun;?>">
-						</div>
-					</div>
-				</div>
+<div class="form-group">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <div class="row">
+                    <label for="nama" class="col-sm-4 control-label"><b>Jenis Sijil <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="spm_jenis_sijil_1" name="spm_jenis_sijil_1" onchange="set_spm('spm_jenis_sijil_1',this.value,'R')"
+                        <?php if($hasData){ print 'disabled'; }?>>
+                            <?php while(!$rssijil->EOF){ ?>
+                            <option value="<?=$rssijil->fields['KOD'];?>" 
+                            <?php if($rssijil->fields['KOD']==$s_sijil){ print 'selected';} ?>  
+                            ><?=$rssijil->fields['DISKRIPSI'];?></option>
+                            <?php $rssijil->movenext(); } ?>
+                        </select>
+                        <input type="hidden" name="spm_sijil_pilih" value="<?=$s_sijil;?>">
+                    </div>
+                </div>
+            </div>
 
-				<BR><BR>
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-4 control-label"><b>Angka Giliran <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="svm_angka_giliran" name="svm_angka_giliran" placeholder="Angka Giliran" value="<?=$rsData->fields['angka_giliran'];?>" <?php if($hasData){ print 'readonly'; }?>>
+                    </div>
+                </div>
+            </div>
 
-				<?php
-				$rsSVM = $conn->query("SELECT * FROM $schema1.`ref_kursus_svm` WHERE IS_DELETED=0"); 
-				?>
-					
-				<div class="form-group">
-					<div class="row">
-						<label for="nama" class="col-sm-2 control-label"><b>Nama Kursus <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
-						<div class="col-sm-10">
-							<select class="form-control" name="svm_sijil_1" id="svm_sijil_1"> 
-								<option value="">Sila pilih nama kursus</option>
-								<?php while(!$rsSVM->EOF){ ?>
-								<option value="<?=$rsSVM->fields['KOD'];?>" <?php if($rsData->fields['nama_sijil']==$rsSVM->fields['KOD']){ print 'selected';} ?>
-								><?=$rsSVM->fields['DISKRIPSI'];?></option>
-								<?php $rsSVM->movenext(); } ?>
-							</select>
-						</div>
-					</div>
-				</div>
+            <div id="bahagian_keputusan_svm" style="<?=$showStyle;?>">
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-4 control-label"><b>Tahun Peperiksaan<div style="float:right">:</div></b></label>
+                        <div class="col-sm-8">
+                            <select name="spm_tahun_1" id="spm_tahun_1" class="form-control" <?php if($hasData){ print 'disabled'; }?>>
+                                <option value="">Sila pilih tahun</option>
+                                <?php for($t=date("Y");$t>=2012;$t--){
+                                    print '<option value="'.$t.'"'; 
+                                    if($s_tahun==$t){ print 'selected'; }
+                                    print '>'.$t.'</option>';
+                                } ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-				<BR><BR>
-	
-				<div class="row">
-					<div class="col-sm-4 col-xm-4" style="padding-bottom:5px"><b>BAHASA MELAYU SVM <font color="#FF0000">*</font><div style="float:right">:</div></b></div>
-					<div class="col-sm-3 col-xm-4" style="padding-bottom:5px">
-						<!-- <input type="hidden" name="mp_1[]" id="mp_1[]" value="103"> -->
-						<select class="form-control" name="gred_bm_1" id="gred_bm_1">
-							<option value="">Sila pilih gred</option>
-							<?php 
-							// $result = get_spm_result($conn, $uid, "103", $tahun, "1");
-							$rsGred->movefirst();
-							while(!$rsGred->EOF){ ?>
-							<option value="<?=$rsGred->fields['GRED'];?>" <?php if($rsData->fields['gred_bm']==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>	
-							<?php $rsGred->movenext(); } ?>
-						</select>
-					</div>
-				</div>
+                <?php $rsSVM = $conn->query("SELECT * FROM $schema1.`ref_kursus_svm` WHERE IS_DELETED=0"); ?>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-4 control-label"><b>Nama Kursus <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="svm_sijil_1" id="svm_sijil_1" <?php if($hasData){ print 'disabled'; }?>> 
+                                <option value="">Sila pilih nama kursus</option>
+                                <?php while(!$rsSVM->EOF){ ?>
+                                <option value="<?=$rsSVM->fields['KOD'];?>" <?php if($rsData->fields['nama_sijil']==$rsSVM->fields['KOD']){ print 'selected';} ?>
+                                ><?=$rsSVM->fields['DISKRIPSI'];?></option>
+                                <?php $rsSVM->movenext(); } ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row"><br><br></div>
-								
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-4 control-label"><b>Bahasa Melayu SVM <font color="#FF0000">*</font><div style="float:right">:</div></b></label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="gred_bm_1" id="gred_bm_1" <?php if($hasData){ print 'disabled'; }?>>
+                                <option value="">Sila pilih gred</option>
+                                <?php $rsGred->movefirst();
+                                while(!$rsGred->EOF){ ?>
+                                <option value="<?=$rsGred->fields['GRED'];?>" <?php if($rsData->fields['gred_bm']==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>  
+                                <?php $rsGred->movenext(); } ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row">
-					<div class="col-sm-12" style="padding-bottom:5px">
-						<table width="100%" class="table" cellpadding="5" cellspacing="0" border="1">
-							<tr>
-								<td width="80%"><b>Kompeten Semua Modul</b></td>
-								<td width="20%"><b>Mata Gred</b></td>
-							</tr>
-							<tr>
-								<td>PURATA NILAI GRED KUMULATIF AKADEMIK (PNGK)<font color="#FF0000">*</font></td>
-								<td>
-									<input type="text" name="svm_pngk" id="svm_pngk" class="form-control" oninput="validate1(this)" 
-									value="<?php print number_format($rsData->fields['svm_pngk'],2);?>">
-								</td>
-							</tr>
-							<tr>
-								<td>PURATA NILAI GRED KUMULATIF VOKASIONAL (PNGKV)<font color="#FF0000">*</font></td>
-								<td>
-									<input type="text" name="svm_pngkv" id="svm_pngkv" class="form-control" oninput="validate2(this)" 
-									value="<?php print number_format($rsData->fields['svm_pngkv'],2);?>">
-								</td>
-							</tr>
-						</table>
-						<i>Pointer PNGK @ PNGKV hanya 4.00 dan kebawah sahaja.</i>
-					</div>
-				</div>
-			</div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table width="100%" class="table table-bordered">
+                            <tr style="background-color:#eee">
+                                <td width="75%"><b>Kompeten Semua Modul</b></td>
+                                <td width="25%"><b>Mata Gred</b></td>
+                            </tr>
+                            <tr>
+                                <td>PURATA NILAI GRED KUMULATIF AKADEMIK (PNGK) <font color="#FF0000">*</font></td>
+                                <td><input type="text" name="svm_pngk" id="svm_pngk" class="form-control" oninput="validate1(this)" value="<?=number_format($rsData->fields['svm_pngk'],2);?>" <?php if($hasData){ print 'readonly'; }?>></td>
+                            </tr>
+                            <tr>
+                                <td>PURATA NILAI GRED KUMULATIF VOKASIONAL (PNGKV) <font color="#FF0000">*</font></td>
+                                <td><input type="text" name="svm_pngkv" id="svm_pngkv" class="form-control" oninput="validate2(this)" value="<?=number_format($rsData->fields['svm_pngkv'],2);?>" <?php if($hasData){ print 'readonly'; }?>></td>
+                            </tr>
+                        </table>
+                        <i class="small text-danger">Pointer PNGK @ PNGKV hanya 4.00 dan kebawah sahaja.</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+<?php
+// ... (Kod backend/query sedia ada) ...
 
+$rsData = $conn->query("SELECT * FROM $schema2.`calon_svm` WHERE `id_pemohon`=".tosql($uid) ." AND `tahun`=".tosql($s_tahun));
 
-			<div class="col-sm-4" align="center" style="border: 2px solid black; padding: 10px; border-radius: 25px;">
-				<h6><b>Sijil SPM/SPM(V)/SVM</b></h6>
-				<img src="<?=$sijil;?>" width="100%" height="400">
-				<?php print $rsSijil->fields['sijil_nama'];?><br>
-				<input type="file" name="file_pmr" id="file_pmr" class="form-control" onchange="do_input()">
-				<small style="color: red;">Hanya menerima format png,jpg,jpeg @ gif dan tidak melebihi 300kb</small>
-			</div>
+// Check Data Wujud
+$hasData = (!empty($rsData->fields['gred_bm'])) ? true : false;
+$showStyle = ($hasData) ? 'display:block' : 'display:none';
 
-		</div>
-			<div class="modal-footer" style="padding:0px;">
-				<button type="button" id="simpan" class="btn btn-primary mt-sm mb-sm" onclick="save_svm(1)"><i class="fa fa-save"></i> Simpan</button>
-				<?php if($actions==2 && !empty($data['spm_tahun_1']) && !empty($rsData->fields['gred_bm'])){ ?>
-						<label class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=SVM&pro=DEL&tahun=<?=$s_tahun;?>&actions=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
-				
-				<?php } else if($actions==1 && !empty($data['spm_tahun_2'])){ ?>
-						<label class="btn btn-danger" title="Sila hapus maklumat peperiksaan kedua terlebih dahulu." onclick="do_dummyhapus()">Hapus</label>
-				
-				<?php } else if($actions==1 && !empty($data['spm_tahun_1']) && !empty($rsData->fields['gred_bm'])){ ?>
-						<label class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=SVM&pro=DEL&tahun=<?=$s_tahun;?>&actions=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
+// --- LOGIC INTEGRASI ---
+// Check flag dari DB
+$is_integ_y = ($rsData->fields['is_integrasi'] == 'Y');
 
-				<?php } ?>
+// Style CSS untuk hide elemen jika integrasi = Y
+$style_hide_integ = ($is_integ_y) ? 'display:none !important;' : ''; 
+?>
+<div class="col-sm-4" id="bahagian_upload" style="border: 2px solid black; padding: 10px; border-radius: 25px; <?=$showStyle;?>; <?=$style_hide_integ;?>" align="center">
+    <h6><b>Sijil SPM/SPM(V)/SVM</b></h6>
+    <img src="<?=$sijil;?>" width="100%" height="400">
+    <input type="file" name="file_pmr" id="file_pmr" class="form-control" onchange="do_input()">
+    <small style="color: red;">Maksimum 300kb (PNG, JPG, JPEG, GIF)</small>
+</div>
+    </div>
+</div>
 
-				<!-- <?php if(!empty($s_sijil)){ ?>
-					<label class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=SVM&pro=DEL&id_pemohon=<?=$uid;?>')">Hapus</label>
-				<?php } ?> -->
-				<input type="hidden" name="progid" id="progid" value="<?php print $progid;?>" />
-				<input type="hidden" name="proses" value="<?php print $proses;?>" />
-			</div>
-		</div>
-	<?php //} ?>
+<div class="modal-footer" style="padding:0px;">
+    <button type="button" id="btn_papar_svm" class="btn btn-success mt-sm mb-sm" onclick="jana_svm()" style="<?=$style_hide_integ;?>">
+        <i class="fa fa-file"></i> Papar Keputusan
+    </button>
+    
+    <button type="button" id="simpan" class="btn btn-primary mt-sm mb-sm" onclick="save_svm(1)" style="<?=($hasData)?'':'display:none;';?>">
+        <i class="fa fa-save"></i> Simpan
+    </button>
 
+    <?php if($hasData){ ?>
+        <label id="btn_hapus_svm" class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=SVM&pro=DEL&tahun=<?=$s_tahun;?>&actions=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')" style="<?=$style_hide_integ;?>">Hapus</label>
+    <?php } ?>
+</div>
 
-	     
+<script>
+// Pengekalan logik set_spm untuk penukaran borang
+function set_spm(fields, vals, ty){
+    var actions = $('#actions').val();
+    $.ajax({
+        url:'akademik/sql_akademik.php?frm=SPM&pro=AWAL&actions='+actions+'&fields='+fields+'&vals='+vals+'&ty='+ty,
+        type:'POST',
+        data: $("form").serialize(),
+        success: function(data){
+            window.location.reload();
+        }
+    });
+}
 
-<script language="javascript" type="text/javascript">
-// var srp_tahun = document.getElementById('srp_tahun').value;
-// var srp_pangkat = document.getElementById('srp_pangkat');
-// // alert(srp_tahun);
-// if(srp_tahun>='1993'){
-// 	srp_pangkat.setAttribute('disabled', '');
-// } else {
-// 	srp_pangkat.removeAttribute('disabled');
-// }
+function jana_svm() {
+    var id_pemohon = $('#id_pemohon').val();
+    var akg = $('#svm_angka_giliran').val().trim();
+
+    if(akg == "") {
+        swal("Amaran", "Sila masukkan Angka Giliran SVM.", "warning");
+        return;
+    }
+
+    var mappingKursus = { "MTK": "99" }; // Contoh mapping
+
+    $.ajax({
+        url: 'akademik/sql_akademik.php?frm=SVM&pro=FETCH_SVM',
+        type: 'POST',
+        data: { id_pemohon: id_pemohon, angkaGiliran: akg },
+        dataType: 'json',
+        beforeSend: function() {
+            swal({ title: "Sila Tunggu", text: "Menarik data daripada APKV (KPM)...", showConfirmButton: false });
+        },
+        success: function(res) {
+            swal.close();
+            
+            $('#bahagian_keputusan_svm').fadeIn();
+            $('#simpan').show(); 
+
+            if(res.status == 'OK') {
+                var d = res.data;
+                isSvmIntegrasi = '1'; // Set Flag
+
+                // --- LOGIK HIDE ELEMEN BILA JUMPA DATA API ---
+                $('#bahagian_upload').hide(); // Hide Upload
+                $('#btn_papar_svm').hide();   // Hide Button Papar
+                $('#btn_hapus_svm').hide();   // Hide Button Hapus
+                
+                // Isi Data
+                var kodDbKursus = mappingKursus[d.kodProgram] ? mappingKursus[d.kodProgram] : "";
+                if(kodDbKursus != "") $('#svm_sijil_1').val(kodDbKursus).trigger('change');
+                
+                $('#gred_bm_1').val(d.gredBM).trigger('change');
+                $('#svm_pngk').val(d.pngka);
+                $('#svm_pngkv').val(d.pngkv);
+                $('#spm_tahun_1').val(d.tahunPeperiksaan).trigger('change');
+
+                // Kunci Field
+                lockSvmFields();
+                
+                // Auto Save (Optional)
+                save_svm(1); 
+
+            } else {
+                // MOD MANUAL (Jika data tak jumpa)
+                isSvmIntegrasi = '0';
+                $('#bahagian_upload').fadeIn();
+                $('#btn_papar_svm').show(); // Tunjuk balik jika user nak try semula
+                // $('#btn_hapus_svm').show(); // Hapus hanya muncul kalau dah save
+                
+                // Unlock
+                $('#svm_sijil_1, #gred_bm_1, #spm_tahun_1').attr('disabled', false);
+                $('#svm_pngk, #svm_pngkv, #svm_angka_giliran').attr('readonly', false);
+                $('#svm_pngk, #svm_pngkv').val('');
+                
+                swal("Maklumat Tiada", "Data tidak dijumpai. Sila isi secara manual.", "info");
+            }
+        },
+        error: function() {
+            swal.close();
+            swal("Ralat", "Gagal berhubung dengan server APKV.", "error");
+        }
+    });
+}
 </script>

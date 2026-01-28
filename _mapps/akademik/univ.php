@@ -298,11 +298,11 @@ $uid = $data['id_pemohon'];
 
 			        	<div class="col-md-12"><?php //print $bilUniv1.":".$bilUniv2.":".$bilUniv3; ?>
 
-			        	<?php if(!empty($bilUniv1)){ ?>
+			        	<!-- <?php if(!empty($bilUniv1)){ ?>
 						<div style="float:right;">
 							<label class="btn btn-danger" onclick="do_hapus_univ('akademik/sql_akademik_univ.php?frm=UNIV&pro=UNIV_DELALL&kep=ALL&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus Semua Maklumat</label>
 						</div>
-						<?php } ?>
+						<?php } ?> -->
 
 					<?php if(empty($bilUniv1)){ ?>
 			                <ul class="nav nav-tabs" role="tablist">
@@ -358,11 +358,11 @@ $uid = $data['id_pemohon'];
 						<button type="button" id="simpan" class="btn btn-primary mt-sm mb-sm" onclick="save_univ('SAVE','')"><i class="fa fa-save"></i> Simpan</button>
 						<?php if(!empty($bilUniv1) || !empty($bilUniv2) || !empty($bilUniv3)){ ?>
 							&nbsp;
-							<?php if($actions==1 && $bilUniv1==1){ ?> 
+							<?php if($actions==1 && $bilUniv1==1 && $db_is_integ == 'T'){ ?> 
 							<label class="btn btn-danger" onclick="do_hapus_univ('akademik/sql_akademik_univ.php?frm=UNIV&pro=UNIV_DEL&kep=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
-							<?php } else if($actions==2 && $bilUniv2==1){ ?> 
+							<?php } else if($actions==2 && $bilUniv2==1 && $db_is_integ == 'T'){ ?> 
 							<label class="btn btn-danger" onclick="do_hapus_univ('akademik/sql_akademik_univ.php?frm=UNIV&pro=UNIV_DEL&kep=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
-							<?php } else if($actions==3 && $bilUniv3==1){ ?> 
+							<?php } else if($actions==3 && $bilUniv3==1 && $db_is_integ == 'T'){ ?> 
 							<label class="btn btn-danger" onclick="do_hapus_univ('akademik/sql_akademik_univ.php?frm=UNIV&pro=UNIV_DEL&kep=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
 							<?php } ?>
 						<?php } ?>

@@ -27,105 +27,136 @@ function set_stpm(fields, vals, ty){
 }
 
 function save_stpm(val){
-	var msg = '';
-	if(val==1){ 
-		var stp_tahun_1 = $('#stp_tahun_1').val();
-		var stp_jenis_1 = $('#stp_jenis_1').val();
-	} else {
-		var stp_tahun_1 = $('#stp_tahun_2').val();
-		var stp_jenis_1 = $('#stp_jenis_2').val();
-	}
+    var msg = '';
+    
+    // Tentukan variable tahun/jenis berdasarkan tab
+    // Gunakan conditional check: Jika element wujud, ambil val(). Jika tak, ambil string kosong "".
+    var stp_tahun_1 = (val==1) ? ($('#stp_tahun_1').val() || "") : ($('#stp_tahun_2').val() || "");
+    var stp_jenis_1 = (val==1) ? ($('#stp_jenis_1').val() || "") : ($('#stp_jenis_2').val() || "");
 
-    if(stp_jenis_1.trim()==''){
-        msg = msg+'\n- Sila pilih jenis sijil.';
-        $("#stp_jenis_1").css("border-color","#f00");
+    // Validation Asas
+    if(stp_jenis_1.trim() == ''){
+        msg += '\n- Sila pilih jenis sijil.';
+        // Highlight border hanya jika elemen wujud
+        if(val==1) $("#stp_jenis_1").css("border-color","#f00"); else $("#stp_jenis_2").css("border-color","#f00");
     }
-    if(stp_tahun_1.trim()==''){
-        msg = msg+'\n- Sila pilih tahun peperiksaan.';
-        $("#stp_tahun_1").css("border-color","#f00");
+    if(stp_tahun_1.trim() == ''){
+        msg += '\n- Sila pilih tahun peperiksaan.';
+        if(val==1) $("#stp_tahun_1").css("border-color","#f00"); else $("#stp_tahun_2").css("border-color","#f00");
     }
 
-	// var input = document.getElementsByName('gred_10');
-	var a = $('#gred_10').val();
-	// var a = input.value;
-    if(a.trim() ==''){
-        msg = msg+'\n- Sila pilih gred bagi matapelajaran Pengajian Am/Kertas Am.';
+    // Validation Gred PA (Kertas Am)
+    // PENTING: Bila guna Integrasi, ID gred_10 kini ada pada <input type="hidden">, bukan select.
+    // .val() berfungsi untuk kedua-duanya, tapi pastikan element wujud.
+    var val_pa = $('#gred_10').val() || ""; 
+    
+    // Logic tambahan: Kalau Integrasi input val 'Y', mungkin kita skip validation ketat 
+    // SEBAB field kosong tak dipaparkan. 
+    // TAPI data integrasi PA (900) mesti ada.
+    var is_integ = $('#is_integrasi_input').val();
+
+    if(val_pa.trim() == ''){
+        // Kalau Integrasi, jika PA tak wujud dalam data yang ditarik, ini mungkin isu.
+        // Tapi selalunya PA wajib ada.
+        msg += '\n- Sila pastikan gred Pengajian Am/Kertas Am lengkap.';
         $("#gred_10").css("border-color","#f00");
     } 
 
-    var text='';
-	let i = 0;
-	while (i < 4) {
-		i++;
-		// alert($('#mp_1'+i).val().trim()+ ":" + $('#gred_1'+i).val().trim());
-		if($('#mp_1'+i).val()=='' && $('#gred_1'+i).val()==''){
-		} else { 
-			if($('#mp_1'+i).val()=='' || $('#gred_1'+i).val()==''){
-		    	msg = msg+'\n- Sila pastikan maklumat matapelajaran dan gred lengkap dipilih.'; 
-			    $(".mps"+i).each(function() {
-				  $(this).siblings(".select2-container").css('border', '1px solid red');
-				});
-			    $("#gred_1"+i).css("border-color","#f00");
-			} 
-		}
-	}
+    // Validation 4 Subjek Lain
+    // Semak element mp_1X dan gred_1X
+    // Dalam Integrasi, ID ini ditambah secara dinamik (mp_11, mp_12, etc).
+    // Loop 1 hingga 4 (slot).
+    let i = 0;
+    while (i < 4) {
+        i++;
+        var el_mp = $('#mp_1'+i);
+        var el_gr = $('#gred_1'+i);
+        
+        var val_mp = el_mp.length ? (el_mp.val() || "") : "";
+        var val_gr = el_gr.length ? (el_gr.val() || "") : "";
 
+        // Logic Manual: Kalau user pilih MP, mesti pilih Gred.
+        // Logic Integrasi: Hidden input sentiasa ada value (pair). 
+        // Jika row tak wujud (sebab data kosong), el_mp.length == 0, so selamat.
+        
+        if (is_integ !== 'Y') { // Hanya validate ketat untuk MANUAL
+            if(val_mp !== '' && val_gr === ''){
+                 msg += '\n- Sila pilih gred untuk matapelajaran ke-'+i;
+                 $("#gred_1"+i).css("border-color","#f00");
+            } else if(val_mp === '' && val_gr !== ''){
+                 msg += '\n- Sila pilih matapelajaran ke-'+i;
+                 // Select2 border handling
+                 $(".mps"+i).next(".select2-container").css('border', '1px solid red');
+            }
+        }
+    }
 
-	if(msg.trim() !=''){ 
-		alert_msg_html(msg);
-	} else { 
-		var fd = new FormData();
-        var files1 = $('#file_pmr')[0].files[0];
-        // var files2 = $('#upload_id2')[0].files[0];
-        fd.append('file_pmr',files1);
-        // fd.append('upload_id2',files2);
+    if(msg.trim() != ''){ 
+        alert_msg_html(msg);
+    } else { 
+        var fd = new FormData();
+        
+        // Handle file upload (hanya wujud masa manual)
+        if ($('#file_pmr').length && $('#file_pmr')[0].files.length > 0) {
+            var files1 = $('#file_pmr')[0].files[0];
+            fd.append('file_pmr', files1);
+        }
+
+        // Enable disabled inputs temporarily for serialization (kalau ada)
+        var disabledInputs = $('form :input:disabled');
+        disabledInputs.removeAttr('disabled');
 
         var other_data = $('form').serializeArray();
-		$.each(other_data,function(key,input){
-		    fd.append(input.name,input.value);
-		});
+        
+        // Restore disabled state
+        disabledInputs.attr('disabled', 'disabled');
+
+        $.each(other_data, function(key, input){
+            fd.append(input.name, input.value);
+        });
+
+        // Debug: Check data sebelum hantar
+        // for (var pair of fd.entries()) { console.log(pair[0]+ ', ' + pair[1]); }
 
         $.ajax({
-	        url:'akademik/sql_akademik.php?frm=STPM&pro=SAVE',
-			type:'POST',
-	        //dataType: 'json',
-	        beforeSend: function () {
-	            // $('.btn-primary').attr("disabled","disabled");
-	            // $('.modal-body').css('opacity', '.5');
-	        },
-			// data: $("form").serialize(),
-			data:  fd,
+            url: 'akademik/sql_akademik.php?frm=STPM&pro=SAVE',
+            type: 'POST',
+            data: fd,
             contentType: false,
             cache: false,
-            processData:false,
-			success: function(data){
-				console.log(data);
-				if(data=='OK'){
-					swal({
-					  title: 'Berjaya',
-					  text: 'Maklumat telah berjaya dikemaskini',
-					  type: 'success',
-					  confirmButtonClass: "btn-success",
-					  confirmButtonText: "Ok",
-					  showConfirmButton: true,
-					}).then(function () {
-						refresh = window.location; 
-						window.location = refresh;
-					});
-				} else if(data=='ERR'){
-					swal({
-					  title: 'Amaran',
-					  text: 'Terdapat ralat sistem.\nMaklumat anda tidak berjaya dikemaskini.',
-					  type: 'error',
-					  confirmButtonClass: "btn-warning",
-					  confirmButtonText: "Ok",
-					  showConfirmButton: true,
-					});
-				}
-				
-			}
-		});
-	}
+            processData: false,
+            success: function(data){
+                // console.log(data);
+                // Trim whitespace respons server (kadang-kadang ada newline)
+                data = $.trim(data);
+                
+                if(data == 'OK'){
+                    swal({
+                      title: 'Berjaya',
+                      text: 'Maklumat telah berjaya dikemaskini',
+                      type: 'success',
+                      confirmButtonClass: "btn-success",
+                      confirmButtonText: "Ok",
+                      showConfirmButton: true,
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                } else {
+                    swal({
+                      title: 'Ralat',
+                      text: 'Maklumat tidak berjaya dikemaskini. Sila cuba lagi.',
+                      type: 'error',
+                      confirmButtonClass: "btn-warning",
+                      confirmButtonText: "Ok",
+                      showConfirmButton: true,
+                    });
+                }
+            },
+            error: function() {
+                 swal("Ralat", "Gagal menghubungi pelayan.", "error");
+            }
+        });
+    }
 }
 function do_input() {  
 

@@ -10,231 +10,198 @@ if(empty($rsSijil->fields['sijil_nama'])){ $sijil="../upload_doc/PMR_Mock_Result
 else { $sijil = "../uploads_doc/".$uid."/".$rsSijil->fields['sijil_nama']; }
 ?>
 <script type="text/javascript">
-function do_save(){
-    var reg = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
-    var vals1 = $('#vals1').val();
-    var vals2 = $('#vals2').val();
-    var vals3 = $('#vals3').val();
-    var vals4 = $('#vals4').val();
 
-    var tahun1 = $('#tahun1').val();
-    var mp1 = $('#mp1').val();
-    var gred1 = $('#gred1').val();
-    var bm1 = $('#bm1').val();
-    var lisan1 = $('#lisan1').val();
+function jana_spm_ulangan(slot) {
+    var tahun = $('#tahun' + slot).val();
+    var akg = $('#akg' + slot).val();
+    var id_pemohon = $('#id_pemohon').val();
 
-    var tahun2 = $('#tahun2').val();
-    var mp2 = $('#mp2').val();
-    var gred2 = $('#gred2').val();
-    var bm2 = $('#bm2').val();
-    var lisan2 = $('#lisan2').val();
+    if (tahun == "" || akg == "") {
+        swal("Amaran", "Sila masukkan Tahun dan Angka Giliran untuk slot ini.", "warning");
+        return;
+    }
 
-    var tahun3 = $('#tahun3').val();
-    var mp3 = $('#mp3').val();
-    var gred3 = $('#gred3').val();
-    var bm3 = $('#bm3').val();
-    var lisan3 = $('#lisan3').val();
+    $.ajax({
+        url: 'akademik/sql_akademik.php?frm=ULANGAN&pro=FETCH_ULANGAN',
+        type: 'POST',
+        data: { tahun: tahun, akg: akg, id_pemohon: id_pemohon },
+        dataType: 'json',
+        beforeSend: function() {
+            swal({ title: "Sila Tunggu", text: "Menarik data SPM Ulangan...", showConfirmButton: false });
+        },
+        success: function(res) {
+            swal.close();
+            if (res.status == 'OK') {
+                $('#simpan').fadeIn();
+                
+                // --- FIX 1: HANYA PAPARKAN HEADER TABLE (Global) ---
+                $('.hdr-keputusan').show(); 
 
-    var tahun4 = $('#tahun4').val();
-    var mp4 = $('#mp4').val();
-    var gred4 = $('#gred4').val();
-    var bm4 = $('#bm4').val();
-    var lisan4 = $('#lisan4').val();
+                $.each(res.data, function(index, item) {
+                    var currentSlot = parseInt(slot) + index;
+                    
+                    if (currentSlot <= 3) {
+                        var kodSistem = item.kod;
+                        var gredSistem = item.gred;
 
-	var msg = '';
+                        // --- FIX 2: HANYA PAPARKAN DATA UNTUK BARIS INI SAHAJA ---
+                        $('#row_utama_' + currentSlot + ' .col-keputusan').show();
+                        
+                        // Sembunyikan butang papar pada row tersebut
+                        $('#row_utama_' + currentSlot + ' .btn-papar').hide();
+
+                        // Assign nilai
+                        $('#mp' + currentSlot).val(kodSistem).trigger('change');
+                        $('#gred' + currentSlot).val(gredSistem.trim()).trigger('change');
+                        $('#tahun' + currentSlot).val(tahun);
+                        $('#akg' + currentSlot).val(akg);
+
+                        // Trigger UI tambahan (BM)
+                        setTimeout(function() {
+                            do_open(kodSistem, currentSlot);
+                            if (kodSistem == '101') { 
+                                $('#bm' + currentSlot).val('1'); 
+                            }
+                        }, 200);
+                        
+                        // Lock fields
+                        $('#tahun' + currentSlot).attr('disabled', true);
+                        $('#akg' + currentSlot).attr('readonly', true);
+                        $('#mp' + currentSlot).attr('disabled', true);
+                        $('#gred' + currentSlot).attr('disabled', true);
+                        
+                        $('#vals' + currentSlot).val(1);
+                    }
+                });
+            } else {
+                // MOD MANUAL
+                $('.hdr-keputusan').show(); 
+                $('#row_utama_' + slot + ' .col-keputusan').show();
+                $('#simpan').fadeIn();
+                swal("Maklumat Tiada", "Data tidak dijumpai. Sila masukkan secara manual.", "info");
+            }
+        }
+    });
+}
+
+function do_open(vals, id) {
+    var row = document.getElementById("tambahan_row" + id);
+    var panel = document.getElementById("tambahan" + id);
     
-	if(vals1==0 && vals2==0 && vals3==0 && vals4==0){
-       	 	msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	        $('#tahun1').css("border-color","#f00");
-	        $('#mp1').css("border-color","#f00");
-	        $('#gred1').css("border-color","#f00");
-	}
+    if (vals == '101' || vals == '103') { 
+        if(row) row.style.display = "table-row";
+        if(panel) panel.style.display = "block";
+    } else {
+        if(row) row.style.display = "none";
+        if(panel) panel.style.display = "none";
+    }
+    on_chg(id);
+}
 
-    if(vals1==1){
-	    if(tahun1.trim() == '' || mp1.trim() == '' || gred1.trim() == '' ){
-	        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	        $('#tahun1').css("border-color","#f00");
-	        $('#mp1').css("border-color","#f00");
-	        $('#gred1').css("border-color","#f00");
-	    } else {
-	    	if(mp1=='101' && (lisan1.trim()=='' || bm1.trim()=='')){
-		        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-		        $('#bm1').css("border-color","#f00");
-		        $('#lisan1').css("border-color","#f00");
-	    	}
-	    }
-	}
+function do_save() {
+    // PADAM baris ini dari sini: $('select[disabled]').prop('disabled', false);
+    
+    var msg = '';
+    var hasData = false;
 
-    if(vals2==1){
-	    if(tahun2.trim() == '' || mp2.trim() == '' || gred2.trim() == '' ){
-	        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	        $('#tahun2').css("border-color","#f00");
-	        $('#mp2').css("border-color","#f00");
-	        $('#gred2').css("border-color","#f00");
-	    } else {
-	    	if(mp2=='101' && (lisan2.trim()=='' || bm2.trim()=='')){
-		        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-		        $('#bm2').css("border-color","#f00");
-		        $('#lisan2').css("border-color","#f00");
-	    	}
-	    }
-	} 
+    for (var i = 1; i <= 4; i++) {
+        var tahunObj = $('#tahun' + i);
+        var mpObj = $('#mp' + i);
+        var gredObj = $('#gred' + i);
 
-    if(vals3==1){
-	    if(tahun3.trim() == '' || mp3.trim() == '' || gred3.trim() == '' ){
-	        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	        $('#tahun3').css("border-color","#f00");
-	        $('#mp3').css("border-color","#f00");
-	        $('#gred3').css("border-color","#f00");
-	    } else {
-	    	if(mp3=='101' && (lisan3.trim()=='' || bm3.trim()=='')){
-		        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-		        $('#bm3').css("border-color","#f00");
-		        $('#lisan3').css("border-color","#f00");
-	    	}
-	    }
-	} 
-    if(vals4==1){
-	    if(tahun4.trim() == '' || mp4.trim() == '' || gred4.trim() == '' ){
-	        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	        $('#tahun4').css("border-color","#f00");
-	        $('#mp4').css("border-color","#f00");
-	        $('#gred4').css("border-color","#f00");
-	    } else {
-	    	if(mp4=='101' && (lisan4.trim()=='' || bm4.trim()=='')){
-		        msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-		        $('#bm4').css("border-color","#f00");
-		        $('#lisan4').css("border-color","#f00");
-	    	}
-	    }
-	} 
+        if (tahunObj.length === 0) continue;
 
+        var tahun = (tahunObj.val() || "").toString().trim();
+        var mp = (mpObj.val() || "").toString().trim();
+        var gred = (gredObj.val() || "").toString().trim();
 
-	if(mp1.trim() !='' && mp2.trim()!='' && mp1==mp2){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp2').css("border-color","#f00");
-	}
-	if(mp1.trim() !='' && mp3.trim()!='' && mp1==mp3){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp3').css("border-color","#f00");
-	}
-	if(mp1.trim() !='' && mp4.trim()!='' && mp1==mp4){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp4').css("border-color","#f00");
-	}
-	if(mp2.trim() !='' && mp3.trim()!='' && mp2==mp3){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp3').css("border-color","#f00");
-	}
-	if(mp2.trim() !='' && mp4.trim()!='' && mp2==mp4){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp4').css("border-color","#f00");
-	}
-	if(mp3.trim() !='' && mp4.trim()!='' && mp3==mp4){
-        msg = msg+"\n- Maklumat matapelajaran telah wujud, sila semak semula.";
-        $('#mp4').css("border-color","#f00");
-	}
+        if (tahun !== '' || mp !== '' || gred !== '') {
+            hasData = true; 
 
-    // var files1 = $('#file1')[0].files[0]['name'];
-    // if(files1.trim() !=''){
-    // 	if(vals1.trim()=='0' && vals2.trim()=='0' && vals3.trim()=='0' && vals4.trim()=='0'){
-	//         msg = msg+"\n- Sila lengkapkan maklumat peperiksaan tambahan.";
-	//         $('#tahun1').css("border-color","#f00");
-	//         $('#mp1').css("border-color","#f00");
-	//         $('#gred1').css("border-color","#f00");
-	//     }
-	// }
+            if (tahun === '' || mp === '' || gred === '') {
+                msg += "\n- Sila lengkapkan maklumat (Tahun, Matapelajaran, Gred) pada Slot " + i;
+                if(tahun === '') tahunObj.css("border-color", "#f00");
+                if(mp === '') mpObj.css("border-color", "#f00");
+                if(gred === '') gredObj.css("border-color", "#f00");
+            } else {
+                if (mp == '101') {
+                    var lisan = ($('#lisan' + i).val() || "").toString().trim();
+                    var bm = ($('#bm' + i).val() || "").toString().trim();
+                    if (lisan == '' || bm == '') {
+                        msg += "\n- Sila lengkapkan maklumat Ujian Lisan untuk Bahasa Melayu pada Slot " + i;
+                        $('#bm' + i).css("border-color", "#f00");
+                        $('#lisan' + i).css("border-color", "#f00");
+                    }
+                }
+            }
+        }
+    }
 
-	if(msg.trim() !=''){ 
-		alert_msg_html(msg);
-	} else {
- 		var fd = new FormData();
-        var files1 = $('#file1')[0].files[0];
-        fd.append('file1',files1);
+    if (!hasData) {
+        msg = "\n- Sila masukkan sekurang-kurangnya satu maklumat peperiksaan tambahan.";
+        $('#tahun1, #mp1, #gred1').css("border-color", "#f00");
+    }
+
+    if (msg !== '') {
+        alert_msg_html(msg);
+        // Field kekal disabled di sini kerana kita tidak panggil prop('disabled', false) lagi
+    } else {
+        // HANYA ENABLEKAN DI SINI (Validasi sudah lulus)
+        $('select[disabled]').prop('disabled', false);
+
+        var fd = new FormData();
+        var fileElem = $('#file1')[0];
+        if (fileElem && fileElem.files.length > 0) {
+            fd.append('file1', fileElem.files[0]);
+        }
 
         var other_data = $('form').serializeArray();
-		$.each(other_data,function(key,input){
-		    fd.append(input.name,input.value);
-		});
+        $.each(other_data, function(key, input) {
+            fd.append(input.name, input.value);
+        });
 
         $.ajax({
-	        url:'akademik/sql_akademik.php?frm=ULANGAN&pro=SAVE',
-            type:'POST',
-            //dataType: 'json',
-            beforeSend: function () {
-                //$('.btn-primary').attr("disabled","disabled");
-                //$('.modal-body').css('opacity', '.5');
-            },
-			data:  fd,
+            url: 'akademik/sql_akademik.php?frm=ULANGAN&pro=SAVE',
+            type: 'POST',
+            data: fd,
             contentType: false,
             cache: false,
-            processData:false,
-            success: function(data){
-                console.log(data);
-                // alert(data);
-                if(data=='OK'){
-                    swal({
-                      title: 'Berjaya',
-                      text: 'Maklumat telah berjaya dikemaskini',
-                      type: 'success',
-                      confirmButtonClass: "btn-success",
-                      confirmButtonText: "Ok",
-                      showConfirmButton: true,
-                    }).then(function () {
-						refresh = window.location; 
-						window.location = refresh;
-                    });
-                } else if(data=='ERR'){
-                    swal({
-                      title: 'Amaran',
-                      text: 'Terdapat ralat sistem.\nMaklumat anda tidak berjaya dikemaskini.',
-                      type: 'error',
-                      confirmButtonClass: "btn-warning",
-                      confirmButtonText: "Ok",
-                      showConfirmButton: true,
-                    });
-                } 
-
-		//else if(data=='XEX'){
-                    //swal({
-                      //title: 'Amaran',
-                      //text: 'Format dokumen yang dimuatnaik tidak dibenarkan.\nHanya format .jpg / .gif / .jpeg / .png / .pdf sahaja yang dibenarkan.',
-                      //type: 'error',
-                      //confirmButtonClass: "btn-warning",
-                      //confirmButtonText: "Ok",
-                      //showConfirmButton: true,
-                    //});
-                //}
-                //window.location.reload();
-
-            },
-            //data: datas
+            processData: false,
+            success: function(data) {
+                if (data.trim() == 'OK') {
+                    swal({ title: 'Berjaya', text: 'Maklumat telah dikemaskini', type: 'success' })
+                    .then(function() { window.location.reload(); });
+                } else {
+                    swal('Amaran', 'Gagal mengemaskini maklumat: ' + data, 'error');
+                    // Jika gagal simpan ddb, anda mungkin mahu disable balik
+                    // lock_inputs_api(); 
+                }
+            }
         });
     }
-}	
-
-function do_open(vals,id){
-	var x = '';	
-	// alert(id+" : "+vals);
-  	if(id==1){
-  		x = document.getElementById("tambahan1");
-  	} else if(id==2){
-  		x = document.getElementById("tambahan2");
-  	} else if(id==3){
-  		x = document.getElementById("tambahan3");
-  	} else if(id==4){
-  		x = document.getElementById("tambahan4");
-	}
-
-	if(vals=='101'){ 
-		x.style.display = "block";
-	} else {
-		x.style.display = "none";
-	}	
-
- 	on_chg(id);
-
 }
+// function do_open(vals,id){
+// 	var x = '';	
+// 	// alert(id+" : "+vals);
+//   	if(id==1){
+//   		x = document.getElementById("tambahan1");
+//   	} else if(id==2){
+//   		x = document.getElementById("tambahan2");
+//   	} else if(id==3){
+//   		x = document.getElementById("tambahan3");
+//   	} else if(id==4){
+//   		x = document.getElementById("tambahan4");
+// 	}
+
+// 	if(vals=='101'){ 
+// 		x.style.display = "block";
+// 	} else {
+// 		x.style.display = "none";
+// 	}	
+
+//  	on_chg(id);
+
+// }
 
 function on_chg(vals){
 	if(vals==1){
@@ -364,6 +331,7 @@ function do_input() {
 							$gred1 = $rsData->fields['gred'];
 							$bm1 = $rsData->fields['jenis_sijil'];
 							$lisan1 = $rsData->fields['ujian_lisan'];
+							$akg1 = $rsData->fields['angka_giliran'];
 						} else if($cntt==1){
 							$vals2=1;
 							$spm_id2 = $rsData->fields['spm_id'];
@@ -373,6 +341,7 @@ function do_input() {
 							$gred2 = $rsData->fields['gred'];
 							$bm2 = $rsData->fields['jenis_sijil'];
 							$lisan2 = $rsData->fields['ujian_lisan'];
+							$akg2 = $rsData->fields['angka_giliran'];
 						} else if($cntt==2){
 							$vals3=1;
 							$spm_id3 = $rsData->fields['spm_id'];
@@ -382,6 +351,7 @@ function do_input() {
 							$gred3 = $rsData->fields['gred'];
 							$bm3 = $rsData->fields['jenis_sijil'];
 							$lisan3 = $rsData->fields['ujian_lisan'];
+							$akg3 = $rsData->fields['angka_giliran'];
 						} else if($cntt==3){
 							$vals4=1;
 							$spm_id4 = $rsData->fields['spm_id'];
@@ -391,6 +361,7 @@ function do_input() {
 							$gred4 = $rsData->fields['gred'];
 							$bm4 = $rsData->fields['jenis_sijil'];
 							$lisan4 = $rsData->fields['ujian_lisan'];
+							$akg4 = $rsData->fields['angka_giliran'];
 						}
 						$cntt++;
 						$rsData->movenext();
@@ -399,328 +370,111 @@ function do_input() {
 					?>
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-8" style="margin-left:-30px;margin-right:-30px;">
-
-								<table width="100%">
-									<tr>
-										<td width="25%"><b>TAHUN</b></td>
-										<td width="50%"><b>MATAPELAJARAN</b></td>
-										<td width="20%"><b>GRED</b></td>
-										<td width="5%"><b></b></td>
-									</tr>
-									<tr>
-										<td>
-											<select class="form-control" name="tahun1" id="tahun1" onchange="on_chg(1)" >
-												<option value="">Sila pilih tahun</option>
-												<?php for($tahun=date("Y");$tahun>$tahun_u;$tahun--){ ?>
-												<option value="<?=$tahun;?>" <?php if($tahun1==$tahun){ print 'selected'; }?>><?=$tahun;?></option>
+							<div class="col-sm-12">
+								<table class="table table-bordered" style="width: 100%; table-layout: fixed;">
+									<thead>
+										<tr style="background-color: #f4f4f4;">
+											<th width="20%">TAHUN</th>
+											<th width="25%">ANGKA GILIRAN</th>
+											<?php 
+												$showColHeader = (!empty($spm_id1) || !empty($spm_id2) || !empty($spm_id3)) ? '' : 'display:none;';
+											?>
+											<th class="col-keputusan hdr-keputusan" style="<?=$showColHeader;?>" width="30%">MATAPELAJARAN</th>
+											<th class="col-keputusan hdr-keputusan" style="<?=$showColHeader;?>" width="12%">GRED</th>
+											<th width="13%">TINDAKAN</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php for($i=1; $i<=3; $i++) { 
+											$spm_id = ${"spm_id$i"};
+											$tahun_val = ${"tahun$i"};
+											$mp_val = ${"mp$i"};
+											$gred_val = ${"gred$i"};
+											
+											// Pastikan backend anda (sql_akademik.php) telah assign nilai ini dari DB
+											$akg_val = ${"akg$i"}; 
+											
+											$hasDataRow = (!empty($spm_id)) ? true : false;
+										?>
+										<tr id="row_utama_<?=$i;?>">
+											<td>
+												<select class="form-control" name="tahun<?=$i;?>" id="tahun<?=$i;?>" onchange="on_chg(<?=$i;?>)" <?=$hasDataRow?'disabled':'';?>>
+													<option value="">Pilih</option>
+													<?php for($t=date("Y"); $t>$tahun_u; $t--){ ?>
+													<option value="<?=$t;?>" <?php if($tahun_val==$t){ print 'selected'; }?>><?=$t;?></option>
+													<?php } ?>
+												</select>
+											</td>
+											<td>
+												<input type="text" class="form-control" name="akg<?=$i;?>" id="akg<?=$i;?>" placeholder="Angka Giliran" value="<?=$akg_val;?>" onchange="on_chg(<?=$i;?>)" <?=$hasDataRow?'readonly':'';?>>
+											</td>
+											<td class="col-keputusan" style="<?=($hasDataRow)?'':'display:none;';?>">
+												<select class="form-control" name="mp<?=$i;?>" id="mp<?=$i;?>" onchange="do_open(this.value,<?=$i;?>)" <?=$hasDataRow?'disabled':'';?>>
+													<option value="">Sila pilih matapelajaran</option>
+													<?php $rssijil->movefirst();
+													while(!$rssijil->EOF){ ?>
+													<option value="<?=$rssijil->fields['mpel_kod'];?>" <?php if($mp_val==$rssijil->fields['mpel_kod']){ print 'selected'; }?>><?=$rssijil->fields['descripsi'];?></option>
+													<?php $rssijil->movenext(); } ?>
+												</select>
+											</td>
+											<td class="col-keputusan" style="<?=($hasDataRow)?'':'display:none;';?>">
+												<select class="form-control" name="gred<?=$i;?>" id="gred<?=$i;?>" onchange="on_chg(<?=$i;?>)" <?=$hasDataRow?'disabled':'';?>>
+													<option value="">Gred</option>
+													<?php $rsGred->movefirst();
+													while(!$rsGred->EOF){ ?>
+													<option value="<?=$rsGred->fields['GRED'];?>" <?php if($gred_val==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>  
+													<?php $rsGred->movenext(); } ?>
+												</select>
+											</td>
+											<td align="center">
+												<?php if(!$hasDataRow){ ?>
+													<button type="button" class="btn btn-success btn-sm btn-block btn-papar" onclick="jana_spm_ulangan(<?=$i;?>)">
+														<i class="fa fa-file"></i> Papar Keputusan
+													</button>
 												<?php } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="mp1" id="mp1" onchange="do_open(this.value,1)">
-												<option value="">Sila pilih matapelajaran</option>
-												<?php $rssijil->movefirst();
-												while(!$rssijil->EOF){ ?>
-												<option value="<?=$rssijil->fields['mpel_kod'];?>" <?php if($mp1==$rssijil->fields['mpel_kod']){ print 'selected'; }?>><?=$rssijil->fields['descripsi'];?></option>
-												<?php $rssijil->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-										<select class="form-control" name="gred1" id="gred1" onchange="on_chg(1)">
-											<option value="">Sila pilih gred</option>
-											<?php $rsGred->movefirst();
-											while(!$rsGred->EOF){ ?>
-											<option value="<?=$rsGred->fields['GRED'];?>" <?php if($gred1==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>	
-											<?php $rsGred->movenext(); } ?>
-										</select>
-										</td>
-										<td>
-										<?php if(!empty($spm_id1)){ ?>
-										<img src="../images/trash.png" title="Hapus maklumat matapelajaran & gred" style="cursor: pointer;" class="btn" 
-										height="35" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=ULANGAN_DEL&sid=<?=$spm_id1;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">
-										<?php } ?>	
-										</td>
-									</tr>
-									<tr><td colspan="4">
-									<div class="col-sm-12"  style="padding-bottom:5px">
-										<table width="100%" id="tambahan1">
-											<tr >
-												<td>
-													<label for="nama" class="col-sm-12 control-label">Jenis</label><br><br>
-												</td>
-												<td colspan="2">
-													<select name="bm1" id="bm1" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="1" <?php if($bm1=='1'){ print 'selected'; } ?>>Bahasa Melayu Kertas Julai / SPM Ulangan</option>
-														<!--<option value="3" <?php if($bm1=='3'){ print 'selected'; } ?>>Bahasa Melayu di Peringkat STPM/STAM</option>-->
-													</select>
-												</td>
-											</tr>
-											<tr style="padding-bottom:5px">
-												<td><label for="nama" class="col-sm-12 control-label">Ujian Lisan</label>
-												</td>
-												<td colspan="2">
-													<select name="lisan1" id="lisan1" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="L" <?php if($lisan1=='L'){ print 'selected'; } ?>>Lulus</option>
-														<option value="G" <?php if($lisan1=='G'){ print 'selected'; } ?>>Gagal</option>
-													</select>
-												</td>
-											</tr>
-										</table>
-									</div>
-									</td></tr>
-	
-
-									<tr>
-										<td>
-											<select class="form-control" name="tahun2" id="tahun2" onchange="on_chg(2)">
-												<option value="">Sila pilih tahun</option>
-												<?php for($tahun=date("Y");$tahun>$tahun_u;$tahun--){ ?>
-												<option value="<?=$tahun;?>" <?php if($tahun2==$tahun){ print 'selected'; }?>><?=$tahun;?></option>
+												<?php if($hasDataRow){ ?>
+													<img src="../images/trash.png" title="Hapus" style="cursor: pointer;" height="25" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=ULANGAN_DEL&sid=<?=$spm_id;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">
 												<?php } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="mp2" id="mp2" onchange="do_open(this.value,2)">
-												<option value="">Sila pilih matapelajaran</option>
-												<?php $rssijil->movefirst();
-												while(!$rssijil->EOF){ ?>
-												<option value="<?=$rssijil->fields['mpel_kod'];?>" <?php if($mp2==$rssijil->fields['mpel_kod']){ print 'selected'; }?>><?=$rssijil->fields['descripsi'];?></option>
-												<?php $rssijil->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="gred2" id="gred2" onchange="on_chg(2)">
-												<option value="">Sila pilih gred</option>
-												<?php $rsGred->movefirst();
-												while(!$rsGred->EOF){ ?>
-												<option value="<?=$rsGred->fields['GRED'];?>" <?php if($gred2==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>	
-												<?php $rsGred->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-										<?php if(!empty($spm_id2)){ ?>
-										<img src="../images/trash.png" title="Hapus maklumat matapelajaran & gred" style="cursor: pointer;" class="btn" 
-										height="35" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=ULANGAN_DEL&sid=<?=$spm_id2;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">
-										<?php } ?>	
-										</td>
-
-									</tr>
-									<tr><td colspan="4">
-									<div class="col-sm-12"  style="padding-bottom:5px">
-										<table width="100%" id="tambahan2">
-											<tr >
-												<td>
-													<label for="nama" class="col-sm-12 control-label">Jenis</label><br><br>
-												</td>
-												<td colspan="2">
-													<select name="bm2" id="bm2" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="1" <?php if($bm2=='1'){ print 'selected'; } ?>>Bahasa Melayu Kertas Julai / SPM Ulangan</option>
-														<!--<option value="3" <?php if($bm2=='3'){ print 'selected'; } ?>>Bahasa Melayu di Peringkat STPM/STAM</option>-->
-													</select>
-												</td>
-											</tr>
-											<tr style="padding-bottom:5px">
-												<td><label for="nama" class="col-sm-12 control-label">Ujian Lisan</label>
-												</td>
-												<td colspan="2">
-													<select name="lisan2" id="lisan2" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="L" <?php if($lisan2=='L'){ print 'selected'; } ?>>Lulus</option>
-														<option value="G" <?php if($lisan2=='G'){ print 'selected'; } ?>>Gagal</option>
-													</select>
-												</td>
-											</tr>
-										</table>
-									</div>
-									</td></tr>
-
-									<tr>
-										<td>
-											<select class="form-control" name="tahun3" id="tahun3" onchange="on_chg(3)">
-												<option value="">Sila pilih tahun</option>
-												<?php for($tahun=date("Y");$tahun>$tahun_u;$tahun--){ ?>
-												<option value="<?=$tahun;?>" <?php if($tahun3==$tahun){ print 'selected'; }?>><?=$tahun;?></option>
-												<?php } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="mp3" id="mp3" onchange="do_open(this.value,3)">
-												<option value="">Sila pilih matapelajaran</option>
-												<?php $rssijil->movefirst();
-												while(!$rssijil->EOF){ ?>
-												<option value="<?=$rssijil->fields['mpel_kod'];?>" <?php if($mp3==$rssijil->fields['mpel_kod']){ print 'selected'; }?>><?=$rssijil->fields['descripsi'];?></option>
-												<?php $rssijil->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="gred3" id="gred3" onchange="on_chg(3)">
-												<option value="">Sila pilih gred</option>
-												<?php $rsGred->movefirst();
-												while(!$rsGred->EOF){ ?>
-												<option value="<?=$rsGred->fields['GRED'];?>" <?php if($gred3==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>	
-												<?php $rsGred->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-										<?php if(!empty($spm_id3)){ ?>
-										<img src="../images/trash.png" title="Hapus maklumat matapelajaran & gred" style="cursor: pointer;" class="btn" 
-										height="35" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=ULANGAN_DEL&sid=<?=$spm_id3;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">
-										<?php } ?>	
-										</td>
-
-									</tr>
-									<tr><td colspan="4">
-									<div class="col-sm-12"  style="padding-bottom:5px">
-										<table width="100%" id="tambahan3">
-											<tr >
-												<td>
-													<label for="nama" class="col-sm-12 control-label">Jenis</label><br><br>
-												</td>
-												<td colspan="2">
-													<select name="bm3" id="bm3" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="1" <?php if($bm3=='1'){ print 'selected'; } ?>>Bahasa Melayu Kertas Julai / SPM Ulangan</option>
-														<!--<option value="3" <?php if($bm3=='3'){ print 'selected'; } ?>>Bahasa Melayu di Peringkat STPM/STAM</option>-->
-													</select>
-												</td>
-											</tr>
-											<tr style="padding-bottom:5px">
-												<td><label for="nama" class="col-sm-12 control-label">Ujian Lisan</label>
-												</td>
-												<td colspan="2">
-													<select name="lisan3" id="lisan3" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="L" <?php if($lisan3=='L'){ print 'selected'; } ?>>Lulus</option>
-														<option value="G" <?php if($lisan3=='G'){ print 'selected'; } ?>>Gagal</option>
-													</select>
-												</td>
-											</tr>
-										</table>
-									</div>
-									</td></tr>
-
-									<tr>
-										<td>
-											<select class="form-control" name="tahun4" id="tahun4" onchange="on_chg(4)">
-												<option value="">Sila pilih tahun</option>
-												<?php for($tahun=date("Y");$tahun>$tahun_u;$tahun--){ ?>
-												<option value="<?=$tahun;?>" <?php if($tahun4==$tahun){ print 'selected'; }?>><?=$tahun;?></option>
-												<?php } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="mp4" id="mp4" onchange="do_open(this.value,4)">
-												<option value="">Sila pilih matapelajaran</option>
-												<?php $rssijil->movefirst();
-												while(!$rssijil->EOF){ ?>
-												<option value="<?=$rssijil->fields['mpel_kod'];?>" <?php if($mp4==$rssijil->fields['mpel_kod']){ print 'selected'; }?>><?=$rssijil->fields['descripsi'];?></option>
-												<?php $rssijil->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-											<select class="form-control" name="gred4" id="gred4" onchange="on_chg(4)">
-												<option value="">Sila pilih gred</option>
-												<?php $rsGred->movefirst();
-												while(!$rsGred->EOF){ ?>
-												<option value="<?=$rsGred->fields['GRED'];?>" <?php if($gred4==$rsGred->fields['GRED']){ print 'selected'; } ?>><?=$rsGred->fields['GRED'];?></option>	
-												<?php $rsGred->movenext(); } ?>
-											</select>
-										</td>
-										<td>
-										<?php if(!empty($spm_id4)){ ?>
-										<img src="../images/trash.png" title="Hapus maklumat matapelajaran & gred" style="cursor: pointer;" class="btn" 
-										height="35" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=ULANGAN_DEL&sid=<?=$spm_id4;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">
-										<?php } ?>	
-										</td>
-
-									</tr>
-									<tr><td colspan="4">
-									<div class="col-sm-12"  style="padding-bottom:5px">
-										<table width="100%" id="tambahan4">
-											<tr >
-												<td>
-													<label for="nama" class="col-sm-12 control-label">Jenis</label><br><br>
-												</td>
-												<td colspan="2">
-													<select name="bm4" id="bm4" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="1" <?php if($bm4=='1'){ print 'selected'; } ?>>Bahasa Melayu Kertas Julai / SPM Ulangan</option>
-														<!--<option value="3" <?php if($bm4=='3'){ print 'selected'; } ?>>Bahasa Melayu di Peringkat STPM/STAM</option>-->
-													</select>
-												</td>
-											</tr>
-											<tr style="padding-bottom:5px">
-												<td><label for="nama" class="col-sm-12 control-label">Ujian Lisan</label>
-												</td>
-												<td colspan="2">
-													<select name="lisan4" id="lisan4" class="form-control">
-														<option value="">Sila Pilih</option>
-														<option value="L" <?php if($lisan4=='L'){ print 'selected'; } ?>>Lulus</option>
-														<option value="G" <?php if($lisan4=='G'){ print 'selected'; } ?>>Gagal</option>
-													</select>
-												</td>
-											</tr>
-										</table>
-									</div>
-									</td></tr>
-
+											</td>
+										</tr>
+										<tr id="tambahan_row<?=$i;?>" style="<?=($mp_val=='101' || $mp_val=='103') ? 'display:table-row;' : 'display:none;'; ?> background-color:#fff9e6;">
+											<td colspan="6">
+												<div id="tambahan<?=$i;?>" style="padding:10px;">
+													<div class="row">
+														<div class="col-sm-6">
+															<label class="small">Jenis:</label>
+															<select name="bm<?=$i;?>" id="bm<?=$i;?>" class="form-control" <?=$hasDataRow?'disabled':'';?>>
+																<option value="">Sila Pilih</option>
+																<option value="1" <?=(${"bm$i"}=='1')?'selected':'';?>>Bahasa Melayu Kertas Julai / SPM Ulangan</option>
+															</select>
+														</div>
+														<div class="col-sm-6">
+															<label class="small">Ujian Lisan:</label>
+															<select name="lisan<?=$i;?>" id="lisan<?=$i;?>" class="form-control" <?=$hasDataRow?'disabled':'';?>>
+																<option value="">Sila Pilih</option>
+																<option value="L" <?=(${"lisan$i"}=='L')?'selected':'';?>>Lulus</option>
+																<option value="G" <?=(${"lisan$i"}=='G')?'selected':'';?>>Gagal</option>
+															</select>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<?php } ?>
+									</tbody>
 								</table>
-
-
-
 							</div>
-
-							<?php
-							// $conn->debug=true;
-							$rsSijil = $conn->query("SELECT * FROM $schema2.`calon_sijil` WHERE `jenis_sijil`='ULANG' AND `id_pemohon`=".tosql($uid));
-							//if(empty($rsSijil->fields['sijil_nama'])){ $sijil1="../upload_doc/sijil_spm.jpg"; }
-							//else { $sijil1 = "/upload/".$uid."/".$rsSijil->fields['sijil_nama']; }
-
-							if(empty($rsSijil->fields['sijil_nama'])){ $sijil_pic ="/var/www/myspp/upload_doc/sijil_spm.jpg"; }
-							else { $sijil_pic = "/var/www/upload/".$uid."/".$rsSijil->fields['sijil_nama']; }
-							if (file_exists($sijil_pic)){
-    								$b64image = base64_encode(file_get_contents($sijil_pic));
-     								$sijil1 = "data:image/png;base64,$b64image";
-							}
-
-							// print $sijil1;
-							?>
-							<div class="col-sm-4" align="center" style="border: 2px solid black; padding: 10px; border-radius: 25px;">
-								<h6><b>Sijil SPM Ulangan</b></h6>
-								<img src="<?=$sijil1;?>" width="100%" height="400">
-								<?php if(!empty($rsSijil->fields['sijil_nama'])){ print $rsSijil->fields['sijil_nama']; } ?><br>
-								<input type="file" name="file1"  id="file1" class="form-control" value="" onchange="do_input()">
-								<small style="color: red;">Hanya menerima format png,jpg,jpeg @ gif dan tidak melebihi 300kb</small>
-							</div>
-							<!-- <div class="col-sm-4" align="center" style="border: 2px solid black; padding: 10px; border-radius: 25px;">
-								<img src="<?=$sijil;?>" width="100%" height="400">
-								<input type="file" name="" class="form-control">
-							</div> -->
-
 						</div>
 					</div>
-					
-					<div class="modal-footer" style="padding:0px;">
-						<button type="button" id="simpan" class="btn btn-primary mt-sm mb-sm" onclick="do_save('SAVE','')"><i class="fa fa-save"></i> Simpan</button>
-						&nbsp;
-						<?php	if(!empty($tahun1)){ ?>
-						<label class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=CLEAR&kep=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
-						<?php } ?>
-						<input type="hidden" name="progid" id="progid" value="<?php //print $progid;?>" />
-						<input type="hidden" name="proses" value="<?php //print $proses;?>" />
-						<input type="hidden" name="vals1" id="vals1" value="<?=$vals1;?>" />
-						<input type="hidden" name="vals2" id="vals2" value="<?=$vals2;?>" />
-						<input type="hidden" name="vals3" id="vals3" value="<?=$vals3;?>" />
-						<input type="hidden" name="vals4" id="vals4" value="<?=$vals4;?>" />
 
-						<input type="hidden" name="spm_id1" id="spm_id1" value="<?=$spm_id1;?>" />
-						<input type="hidden" name="spm_id2" id="spm_id2" value="<?=$spm_id2;?>" />
-						<input type="hidden" name="spm_id3" id="spm_id3" value="<?=$spm_id3;?>" />
-						<input type="hidden" name="spm_id4" id="spm_id4" value="<?=$spm_id4;?>" />
+					<div class="modal-footer" style="padding:0px;">
+						<button type="button" id="simpan" class="btn btn-primary mt-sm mb-sm" onclick="do_save('SAVE','')" style="<?=($vals1==1 || $vals2==1)?'':'display:none;';?>">
+							<i class="fa fa-save"></i> Simpan
+						</button>
+						&nbsp;
+						<?php if(!empty($tahun1)){ ?>
+						<label id="btn_hapus_semua" class="btn btn-danger" onclick="do_hapus('akademik/sql_akademik.php?frm=ULANGAN&pro=CLEAR&kep=<?=$actions;?>&id_pemohon=<?=$_SESSION['SESS_UID'];?>')">Hapus</label>
+						<?php } ?>
 					</div>
 				</div>
 
@@ -756,16 +510,6 @@ function do_input() {
 <?php } else { ?>
 <script language="javascript" type="text/javascript">
 	document.getElementById("tambahan3").style.display = "none";
-</script>
-<?php } ?>
-
-<?php if($mp4=="101"){ ?>
-<script language="javascript" type="text/javascript">
-	document.getElementById("tambahan4").style.display = "block";
-</script>
-<?php } else { ?>
-<script language="javascript" type="text/javascript">
-	document.getElementById("tambahan4").style.display = "none";
 </script>
 <?php } ?>
 

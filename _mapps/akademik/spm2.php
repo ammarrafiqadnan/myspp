@@ -105,6 +105,18 @@ else { $sijil = "/upload/".$uid."/".$rsSijil->fields['sijil_nama']; }
 			</div>
 		</div>
 	</div>
+	<div class="form-group">
+    <div class="row">
+        <label class="col-sm-2 control-label">
+            <b>Angka Giliran <font color="#FF0000">*</font> :</b>
+        </label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="spm_angka_giliran" id="spm_angka_giliran_2" 
+                value="<?=$data['angka_giliran_spm2'];?>" placeholder="Angka Giliran" maxlength="12">
+        </div>
+    </div>
+</div>
+	
 
 	<?php if(!empty($data['spm_tahun_2'])){ 
 		$rsSRP = $conn->query("SELECT * FROM $schema1.`ref_matapelajaran` WHERE `TKT`='5' AND `SAH_YT`='Y' AND `GAB_YT`='T' AND `kod` NOT IN ('103') 
